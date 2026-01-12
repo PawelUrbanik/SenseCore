@@ -1,0 +1,146 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: sensecore-postgres
+    environment:
+      POSTGRES_DB: sensecore
+      POSTGRES_USER: sensecore
+      POSTGRES_PASSWORD: sensecore
+    ports:
+      - "5432:5432"
+    volumes:
+      - sensecore_pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sensecore -d sensecore"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    networks:
+      - sensecore
+
+  rabbitmq:
+    image: rabbitmq:3.13-management
+    container_name: sensecore-rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: sensecore
+      RABBITMQ_DEFAULT_PASS: sensecore
+      # Opcjonalnie: domyślny vhost
+      RABBITMQ_DEFAULT_VHOST: /
+    ports:
+      - "5672:5672"     # AMQP
+      - "15672:15672"   # Management UI http://localhost:15672
+    volumes:
+      - sensecore_rabbit_data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    networks:
+      - sensecore
+
+  # Opcjonalnie: wygodny UI do bazy
+  pgadmin:
+    image: dpage/pgadmin4:8
+    container_name: sensecore-pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@sensecore.local
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "5050:80" # http://localhost:5050
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - sensecore
+    profiles: ["tools"]
+
+  ingestion-service:
+    build:
+      context: ../services/ingestion-service
+      dockerfile: Dockerfile
+    container_name: sensecore-ingestion
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SERVER_PORT: 8081
+
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/sensecore
+      SPRING_DATASOURCE_USERNAME: sensecore
+      SPRING_DATASOURCE_PASSWORD: sensecore
+
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: sensecore
+      SPRING_RABBITMQ_PASSWORD: sensecore
+
+      # Ustal sobie spójne nazwy eventów
+      SENSECORE_TELEMETRY_EXCHANGE: sensecore.telemetry
+      SENSECORE_TEMPERATURE_ROUTING_KEY: temperature
+      SENSECORE_TEMPERATURE_QUEUE: sensecore.telemetry.temperature
+    ports:
+      - "8081:8081"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - sensecore
+
+  processor-service:
+    build:
+      context: ../services/processor-service
+      dockerfile: Dockerfile
+    container_name: sensecore-processor
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SERVER_PORT: 8082
+
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/sensecore
+      SPRING_DATASOURCE_USERNAME: sensecore
+      SPRING_DATASOURCE_PASSWORD: sensecore
+
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: sensecore
+      SPRING_RABBITMQ_PASSWORD: sensecore
+
+      SENSECORE_TELEMETRY_EXCHANGE: sensecore.telemetry
+      SENSECORE_TEMPERATURE_ROUTING_KEY: temperature
+      SENSECORE_TEMPERATURE_QUEUE: sensecore.telemetry.temperature
+    ports:
+      - "8082:8082"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - sensecore
+
+  query-service:
+    build:
+      context: ../services/query-service
+      dockerfile: Dockerfile
+    container_name: sensecore-query
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SERVER_PORT: 8083
+
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/sensecore
+      SPRING_DATASOURCE_USERNAME: sensecore
+      SPRING_DATASOURCE_PASSWORD: sensecore
+    ports:
+      - "8083:8083"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - sensecore
+
+networks:
+  sensecore:
+
+volumes:
+  sensecore_pg_data:
+  sensecore_rabbit_data:
