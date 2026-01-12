@@ -1,0 +1,169 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36" version="29.3.0">
+  <diagram name="Sequence - Send Temperature Reading" id="bsIyqmzIpifeXROsKZPS">
+    <mxGraphModel grid="1" page="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="6K2JuTU6oCXMHjhqI3bG-1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf" value="Arduino / ESP32" vertex="1">
+          <mxGeometry height="50" width="110" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="6K2JuTU6oCXMHjhqI3bG-2" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6" value="Nginx Gateway&#xa;(mTLS)" vertex="1">
+          <mxGeometry height="50" width="100.5" x="350" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="6K2JuTU6oCXMHjhqI3bG-3" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366" value="Ingestion Service" vertex="1">
+          <mxGeometry height="50" width="170" x="620" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="6K2JuTU6oCXMHjhqI3bG-4" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656" value="RabbitMQ" vertex="1">
+          <mxGeometry height="50" width="150" x="926" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="6K2JuTU6oCXMHjhqI3bG-5" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366" value="Processor Service" vertex="1">
+          <mxGeometry height="50" width="170" x="1150" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="6K2JuTU6oCXMHjhqI3bG-6" parent="1" style="shape=cylinder;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450" value="PostgreSQL" vertex="1">
+          <mxGeometry height="50" width="160" x="1480" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="6K2JuTU6oCXMHjhqI3bG-7" edge="1" parent="1" source="6K2JuTU6oCXMHjhqI3bG-1" style="endArrow=none;dashed=1;strokeColor=#6c8ebf;html=1" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="60" y="861" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="6K2JuTU6oCXMHjhqI3bG-8" parent="1" style="ellipse;opacity=0;strokeOpacity=0;fillOpacity=0" value="" vertex="1">
+          <mxGeometry height="1" width="1" x="140" y="860" as="geometry" />
+        </mxCell>
+        <mxCell id="6K2JuTU6oCXMHjhqI3bG-9" edge="1" parent="1" source="6K2JuTU6oCXMHjhqI3bG-30" style="endArrow=none;dashed=1;strokeColor=#9673a6;html=1;exitX=0.75;exitY=1;exitDx=0;exitDy=0;" target="6K2JuTU6oCXMHjhqI3bG-10" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="289" y="585" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="6K2JuTU6oCXMHjhqI3bG-10" parent="1" style="ellipse;opacity=0;strokeOpacity=0;fillOpacity=0" value="" vertex="1">
+          <mxGeometry height="1" width="1" x="399.75" y="870" as="geometry" />
+        </mxCell>
+        <mxCell id="6K2JuTU6oCXMHjhqI3bG-11" edge="1" parent="1" source="6K2JuTU6oCXMHjhqI3bG-3" style="endArrow=none;dashed=1;strokeColor=#82b366;html=1" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="705" y="870" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="6K2JuTU6oCXMHjhqI3bG-12" parent="1" style="ellipse;opacity=0;strokeOpacity=0;fillOpacity=0" value="" vertex="1">
+          <mxGeometry height="1" width="1" x="605" y="860" as="geometry" />
+        </mxCell>
+        <mxCell id="6K2JuTU6oCXMHjhqI3bG-13" edge="1" parent="1" source="6K2JuTU6oCXMHjhqI3bG-4" style="endArrow=none;dashed=1;strokeColor=#d6b656;html=1" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1010" y="861" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="6K2JuTU6oCXMHjhqI3bG-14" parent="1" style="ellipse;opacity=0;strokeOpacity=0;fillOpacity=0" value="" vertex="1">
+          <mxGeometry height="1" width="1" x="845" y="860" as="geometry" />
+        </mxCell>
+        <mxCell id="6K2JuTU6oCXMHjhqI3bG-15" edge="1" parent="1" source="6K2JuTU6oCXMHjhqI3bG-5" style="endArrow=none;dashed=1;strokeColor=#82b366;html=1" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1240" y="860" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="6K2JuTU6oCXMHjhqI3bG-16" parent="1" style="ellipse;opacity=0;strokeOpacity=0;fillOpacity=0" value="" vertex="1">
+          <mxGeometry height="1" width="1" x="1075" y="860" as="geometry" />
+        </mxCell>
+        <mxCell id="6K2JuTU6oCXMHjhqI3bG-17" edge="1" parent="1" source="6K2JuTU6oCXMHjhqI3bG-6" style="endArrow=none;dashed=1;strokeColor=#b85450;html=1" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1560.5714285714287" y="850" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="6K2JuTU6oCXMHjhqI3bG-18" parent="1" style="ellipse;opacity=0;strokeOpacity=0;fillOpacity=0" value="" vertex="1">
+          <mxGeometry height="1" width="1" x="1310" y="860" as="geometry" />
+        </mxCell>
+        <mxCell id="6K2JuTU6oCXMHjhqI3bG-19" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=16;fontStyle=1" value="Sequence: Send Temperature Reading (REST + mTLS + Queue)" vertex="1">
+          <mxGeometry height="30" width="900" x="60" y="150" as="geometry" />
+        </mxCell>
+        <mxCell id="6K2JuTU6oCXMHjhqI3bG-20" edge="1" parent="1" source="6K2JuTU6oCXMHjhqI3bG-1" style="endArrow=block;html=1;strokeWidth=2" target="6K2JuTU6oCXMHjhqI3bG-2" value="POST /api/ingest/v1/temperature&#xa;Body: {deviceId?, ts, temperatureC}">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="220" y="110" />
+            </Array>
+            <mxPoint x="140" y="190" as="sourcePoint" />
+            <mxPoint x="370" y="190" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="6K2JuTU6oCXMHjhqI3bG-21" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666" value="Nginx:&#xa;- TLS handshake&#xa;- verify client cert (mTLS)&#xa;- rate limit&#xa;- forward fingerprint" vertex="1">
+          <mxGeometry height="90" width="240" x="280.25" y="210" as="geometry" />
+        </mxCell>
+        <mxCell id="6K2JuTU6oCXMHjhqI3bG-22" edge="1" parent="1" source="6K2JuTU6oCXMHjhqI3bG-2" style="endArrow=block;html=1;strokeWidth=2" target="6K2JuTU6oCXMHjhqI3bG-3" value="Forward request + headers&#xa;X-SSL-Client-Fingerprint">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="530" y="100" />
+            </Array>
+            <mxPoint x="370" y="330" as="sourcePoint" />
+            <mxPoint x="605" y="330" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="6K2JuTU6oCXMHjhqI3bG-23" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666" value="Ingestion:&#xa;- validate payload&#xa;- map fingerprint -&gt; device&#xa;- enrich receivedAt&#xa;- publish to queue" vertex="1">
+          <mxGeometry height="100" width="240" x="585" y="350" as="geometry" />
+        </mxCell>
+        <mxCell id="6K2JuTU6oCXMHjhqI3bG-24" edge="1" parent="1" source="6K2JuTU6oCXMHjhqI3bG-3" style="endArrow=block;html=1;strokeWidth=2" target="6K2JuTU6oCXMHjhqI3bG-4" value="Publish message&#xa;telemetry.temperature">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="860" y="100" />
+            </Array>
+            <mxPoint x="605" y="480" as="sourcePoint" />
+            <mxPoint x="845" y="480" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="6K2JuTU6oCXMHjhqI3bG-25" edge="1" parent="1" source="6K2JuTU6oCXMHjhqI3bG-4" style="endArrow=block;html=1;strokeWidth=2" target="6K2JuTU6oCXMHjhqI3bG-5" value="Deliver message">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1120" y="130" />
+            </Array>
+            <mxPoint x="845" y="560" as="sourcePoint" />
+            <mxPoint x="1075" y="560" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="6K2JuTU6oCXMHjhqI3bG-26" edge="1" parent="1" source="6K2JuTU6oCXMHjhqI3bG-5" style="endArrow=block;html=1;strokeWidth=2" target="6K2JuTU6oCXMHjhqI3bG-6" value="INSERT reading&#xa;(deviceId, ts, tempC, receivedAt)">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1400" y="130" />
+            </Array>
+            <mxPoint x="1075" y="640" as="sourcePoint" />
+            <mxPoint x="1310" y="640" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="6K2JuTU6oCXMHjhqI3bG-27" edge="1" parent="1" source="6K2JuTU6oCXMHjhqI3bG-6" style="endArrow=block;html=1;dashed=1" target="6K2JuTU6oCXMHjhqI3bG-5" value="OK">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1400" y="30" />
+            </Array>
+            <mxPoint x="1310" y="690" as="sourcePoint" />
+            <mxPoint x="1075" y="690" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="6K2JuTU6oCXMHjhqI3bG-28" edge="1" parent="1" source="6K2JuTU6oCXMHjhqI3bG-3" style="endArrow=block;html=1;dashed=1" target="6K2JuTU6oCXMHjhqI3bG-2" value="202 Accepted&#xa;(queued)">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="540" y="30" />
+            </Array>
+            <mxPoint x="605" y="520" as="sourcePoint" />
+            <mxPoint x="370" y="520" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="6K2JuTU6oCXMHjhqI3bG-29" edge="1" parent="1" source="6K2JuTU6oCXMHjhqI3bG-2" style="endArrow=block;html=1;dashed=1" target="6K2JuTU6oCXMHjhqI3bG-1" value="202 Accepted">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="230" y="30" />
+            </Array>
+            <mxPoint x="370" y="570" as="sourcePoint" />
+            <mxPoint x="140" y="570" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="6K2JuTU6oCXMHjhqI3bG-31" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=12" value="Note: Ingestion returns 202 immediately after enqueue. Processor persists asynchronously." vertex="1">
+          <mxGeometry height="30" width="800" x="30" y="920" as="geometry" />
+        </mxCell>
+        <mxCell id="6K2JuTU6oCXMHjhqI3bG-33" edge="1" parent="1" source="6K2JuTU6oCXMHjhqI3bG-2" style="endArrow=none;dashed=1;strokeColor=#9673a6;html=1;entryX=0.766;entryY=-0.01;entryDx=0;entryDy=0;entryPerimeter=0;" target="6K2JuTU6oCXMHjhqI3bG-30" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="400" y="90" as="sourcePoint" />
+            <mxPoint x="400" y="870" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="6K2JuTU6oCXMHjhqI3bG-30" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656" value="If timeout/5xx: Arduino retries with backoff&#xa;(e.g., 5s, 15s, 30s ...)" vertex="1">
+          <mxGeometry height="70" width="430" x="60" y="515" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -1,0 +1,91 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36" version="29.3.0">
+  <diagram name="C4 - Component - Processor Service" id="3rH5Ii1KohokKGdjEp5V">
+    <mxGraphModel grid="1" page="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="NoRKHjwXVNfcyxqCQCuf-3" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=18;fontStyle=1" value="C4: Component - Processor Service (Spring Boot, Queue Consumer)" vertex="1">
+          <mxGeometry height="30" width="1000" x="60" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="NoRKHjwXVNfcyxqCQCuf-4" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656" value="RabbitMQ&#xa;telemetry.temperature" vertex="1">
+          <mxGeometry height="90" width="140" x="60" y="180" as="geometry" />
+        </mxCell>
+        <mxCell id="NoRKHjwXVNfcyxqCQCuf-5" parent="1" style="shape=cylinder;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450" value="PostgreSQL" vertex="1">
+          <mxGeometry height="140" width="280" x="1420" y="280" as="geometry" />
+        </mxCell>
+        <mxCell id="NoRKHjwXVNfcyxqCQCuf-6" parent="1" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=2;fillColor=#d5e8d4;strokeColor=#82b366" value="Processor Service" vertex="1">
+          <mxGeometry height="720" width="1020" x="360" y="110" as="geometry" />
+        </mxCell>
+        <mxCell id="NoRKHjwXVNfcyxqCQCuf-7" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366" value="TelemetryConsumer&#xa;AMQP listener&#xa;Manual ACK / retry policy" vertex="1">
+          <mxGeometry height="110" width="210" x="410" y="170" as="geometry" />
+        </mxCell>
+        <mxCell id="NoRKHjwXVNfcyxqCQCuf-8" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366" value="MessageValidator&#xa;Schema + required fields&#xa;Poison message detection" vertex="1">
+          <mxGeometry height="80" width="170" x="890" y="170" as="geometry" />
+        </mxCell>
+        <mxCell id="NoRKHjwXVNfcyxqCQCuf-9" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366;dashed=1" value="DeduplicationService (optional)&#xa;Idempotency key store&#xa;(avoid duplicates on retries)" vertex="1">
+          <mxGeometry height="90" width="150" x="1200" y="170" as="geometry" />
+        </mxCell>
+        <mxCell id="NoRKHjwXVNfcyxqCQCuf-10" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366" value="ReadingPersistenceService&#xa;Persists readings&#xa;Transactional write" vertex="1">
+          <mxGeometry height="110" width="190" x="414" y="440" as="geometry" />
+        </mxCell>
+        <mxCell id="NoRKHjwXVNfcyxqCQCuf-11" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366;dashed=1" value="AggregationService (optional)&#xa;Compute buckets (1m/5m/1h)&#xa;Write aggregates" vertex="1">
+          <mxGeometry height="80" width="190" x="900" y="505" as="geometry" />
+        </mxCell>
+        <mxCell id="NoRKHjwXVNfcyxqCQCuf-12" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366;dashed=1" value="AlertingRules (future)&#xa;Thresholds, anomaly detection&#xa;Send notifications" vertex="1">
+          <mxGeometry height="70" width="180" x="1185" y="290" as="geometry" />
+        </mxCell>
+        <mxCell id="NoRKHjwXVNfcyxqCQCuf-13" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366" value="ReadingRepository&#xa;DB writes for readings" vertex="1">
+          <mxGeometry height="90" width="190" x="1110" y="700" as="geometry" />
+        </mxCell>
+        <mxCell id="NoRKHjwXVNfcyxqCQCuf-14" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366;dashed=1" value="AggregateRepository (optional)&#xa;DB writes for aggregates" vertex="1">
+          <mxGeometry height="70" width="95" x="1260" y="470" as="geometry" />
+        </mxCell>
+        <mxCell id="NoRKHjwXVNfcyxqCQCuf-15" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366" value="Dead-letter / Retry Handling&#xa;DLQ routing, backoff, max attempts&#xa;(policy configuration)" vertex="1">
+          <mxGeometry height="90" width="225" x="865" y="320" as="geometry" />
+        </mxCell>
+        <mxCell id="NoRKHjwXVNfcyxqCQCuf-16" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366" value="Observability&#xa;Metrics, logs, tracing&#xa;Lag, failures, DLQ size" vertex="1">
+          <mxGeometry height="70" width="220" x="400" y="330" as="geometry" />
+        </mxCell>
+        <mxCell id="NoRKHjwXVNfcyxqCQCuf-17" edge="1" parent="1" source="NoRKHjwXVNfcyxqCQCuf-4" style="endArrow=block;html=1;strokeWidth=2" target="NoRKHjwXVNfcyxqCQCuf-7" value="Deliver message">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="NoRKHjwXVNfcyxqCQCuf-18" edge="1" parent="1" source="NoRKHjwXVNfcyxqCQCuf-7" style="endArrow=block;html=1" target="NoRKHjwXVNfcyxqCQCuf-8" value="validate">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="NoRKHjwXVNfcyxqCQCuf-19" edge="1" parent="1" source="NoRKHjwXVNfcyxqCQCuf-8" style="endArrow=block;html=1;dashed=1" target="NoRKHjwXVNfcyxqCQCuf-9" value="(optional) dedup">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="NoRKHjwXVNfcyxqCQCuf-20" edge="1" parent="1" source="NoRKHjwXVNfcyxqCQCuf-8" style="endArrow=block;html=1;strokeWidth=2" target="NoRKHjwXVNfcyxqCQCuf-10" value="persist reading">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="NoRKHjwXVNfcyxqCQCuf-21" edge="1" parent="1" source="NoRKHjwXVNfcyxqCQCuf-10" style="endArrow=block;html=1;strokeWidth=2" target="NoRKHjwXVNfcyxqCQCuf-13" value="write readings">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="NoRKHjwXVNfcyxqCQCuf-22" edge="1" parent="1" source="NoRKHjwXVNfcyxqCQCuf-13" style="endArrow=block;html=1;strokeWidth=2" target="NoRKHjwXVNfcyxqCQCuf-5" value="SQL">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="NoRKHjwXVNfcyxqCQCuf-23" edge="1" parent="1" source="NoRKHjwXVNfcyxqCQCuf-10" style="endArrow=block;html=1;dashed=1" target="NoRKHjwXVNfcyxqCQCuf-11" value="(optional) aggregate">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="NoRKHjwXVNfcyxqCQCuf-24" edge="1" parent="1" source="NoRKHjwXVNfcyxqCQCuf-11" style="endArrow=block;html=1;dashed=1" target="NoRKHjwXVNfcyxqCQCuf-14" value="(optional) write aggregates">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="NoRKHjwXVNfcyxqCQCuf-25" edge="1" parent="1" source="NoRKHjwXVNfcyxqCQCuf-14" style="endArrow=block;html=1;dashed=1" target="NoRKHjwXVNfcyxqCQCuf-5" value="SQL">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="NoRKHjwXVNfcyxqCQCuf-26" edge="1" parent="1" source="NoRKHjwXVNfcyxqCQCuf-7" style="endArrow=block;html=1" target="NoRKHjwXVNfcyxqCQCuf-15" value="retry/DLQ policy">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="NoRKHjwXVNfcyxqCQCuf-27" edge="1" parent="1" source="NoRKHjwXVNfcyxqCQCuf-7" style="endArrow=block;html=1" target="NoRKHjwXVNfcyxqCQCuf-16" value="metrics/logs">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="NoRKHjwXVNfcyxqCQCuf-28" edge="1" parent="1" source="NoRKHjwXVNfcyxqCQCuf-10" style="endArrow=block;html=1" target="NoRKHjwXVNfcyxqCQCuf-16" value="metrics/logs">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="NoRKHjwXVNfcyxqCQCuf-29" edge="1" parent="1" source="NoRKHjwXVNfcyxqCQCuf-11" style="endArrow=block;html=1;dashed=1" target="NoRKHjwXVNfcyxqCQCuf-12" value="(future) alerts">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

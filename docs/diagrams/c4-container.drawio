@@ -1,0 +1,79 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36" version="29.3.0">
+  <diagram name="C4 - Container" id="OG4OrTRt1LgmZUynvMSb">
+    <mxGraphModel grid="1" page="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="4Vlql_HxbucCO09blRnh-1" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=18;fontStyle=1" value="C4: Container - Temperature Monitoring Platform (EC2 + mTLS + Queue)" vertex="1">
+          <mxGeometry height="30" width="1100" x="60" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="4Vlql_HxbucCO09blRnh-2" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf" value="IoT Devices&#xa;Arduino / ESP32" vertex="1">
+          <mxGeometry height="90" width="160" x="60" y="340" as="geometry" />
+        </mxCell>
+        <mxCell id="4Vlql_HxbucCO09blRnh-3" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00" value="User / Admin&#xa;Web Browser" vertex="1">
+          <mxGeometry height="90" width="150" x="60" y="90" as="geometry" />
+        </mxCell>
+        <mxCell id="4Vlql_HxbucCO09blRnh-4" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666" value="Internet" vertex="1">
+          <mxGeometry height="80" width="140" x="330" y="200" as="geometry" />
+        </mxCell>
+        <mxCell id="4Vlql_HxbucCO09blRnh-5" parent="1" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=2;fillColor=#fff2cc;strokeColor=#d6b656" value="AWS EC2 (Docker Compose)" vertex="1">
+          <mxGeometry height="700" width="1200" x="490" y="90" as="geometry" />
+        </mxCell>
+        <mxCell id="4Vlql_HxbucCO09blRnh-6" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6" value="Nginx Gateway (Edge)&#xa;- Terminates TLS&#xa;- mTLS verify client cert&#xa;- Rate limit&#xa;- Reverse proxy" vertex="1">
+          <mxGeometry height="120" width="210" x="570" y="160" as="geometry" />
+        </mxCell>
+        <mxCell id="4Vlql_HxbucCO09blRnh-7" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00" value="Static Web Hosting&#xa;(Angular build)&#xa;served by Nginx" vertex="1">
+          <mxGeometry height="90" width="320" x="550" y="410" as="geometry" />
+        </mxCell>
+        <mxCell id="4Vlql_HxbucCO09blRnh-8" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366" value="Ingestion Service&#xa;Spring Boot&#xa;Receives telemetry, validates, enqueues" vertex="1">
+          <mxGeometry height="120" width="230" x="950" y="160" as="geometry" />
+        </mxCell>
+        <mxCell id="4Vlql_HxbucCO09blRnh-9" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf" value="Query API&#xa;Spring Boot&#xa;Read-only API for UI" vertex="1">
+          <mxGeometry height="90" width="230" x="920" y="485" as="geometry" />
+        </mxCell>
+        <mxCell id="4Vlql_HxbucCO09blRnh-10" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366" value="Processor Service&#xa;Spring Boot&#xa;Consumes queue, persists, aggregates" vertex="1">
+          <mxGeometry height="90" width="260" x="1040" y="310" as="geometry" />
+        </mxCell>
+        <mxCell id="4Vlql_HxbucCO09blRnh-11" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#b0e3e6;strokeColor=#0e8088;" value="RabbitMQ&#xa;Telemetry Queue" vertex="1">
+          <mxGeometry height="120" width="140" x="1500" y="160" as="geometry" />
+        </mxCell>
+        <mxCell id="4Vlql_HxbucCO09blRnh-12" parent="1" style="shape=cylinder;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450" value="PostgreSQL&#xa;temperature_reading, device, certificates" vertex="1">
+          <mxGeometry height="120" width="234" x="1420" y="470" as="geometry" />
+        </mxCell>
+        <mxCell id="4Vlql_HxbucCO09blRnh-13" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666" value="Security boundaries:&#xa;- Public: only 443 to Nginx&#xa;- Internal: services, RabbitMQ, DB on Docker network&#xa;- Device identity: mTLS (client cert) + fingerprint mapping" vertex="1">
+          <mxGeometry height="120" width="1070" x="570" y="610" as="geometry" />
+        </mxCell>
+        <mxCell id="4Vlql_HxbucCO09blRnh-14" edge="1" parent="1" source="4Vlql_HxbucCO09blRnh-3" style="endArrow=block;html=1;strokeWidth=2" target="4Vlql_HxbucCO09blRnh-4" value="Loads UI&#xa;HTTPS">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="4Vlql_HxbucCO09blRnh-15" edge="1" parent="1" source="4Vlql_HxbucCO09blRnh-2" style="endArrow=block;html=1;strokeWidth=2" target="4Vlql_HxbucCO09blRnh-4" value="Sends telemetry&#xa;HTTPS (mTLS)">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="4Vlql_HxbucCO09blRnh-16" edge="1" parent="1" source="4Vlql_HxbucCO09blRnh-4" style="endArrow=block;html=1;strokeWidth=2" target="4Vlql_HxbucCO09blRnh-6" value="HTTPS">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="4Vlql_HxbucCO09blRnh-17" edge="1" parent="1" source="4Vlql_HxbucCO09blRnh-6" style="endArrow=block;html=1" target="4Vlql_HxbucCO09blRnh-7" value="Serves Angular static files">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="4Vlql_HxbucCO09blRnh-18" edge="1" parent="1" source="4Vlql_HxbucCO09blRnh-6" style="endArrow=block;html=1" target="4Vlql_HxbucCO09blRnh-8" value="Proxy API: /ingest/*">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="4Vlql_HxbucCO09blRnh-19" edge="1" parent="1" source="4Vlql_HxbucCO09blRnh-6" style="endArrow=block;html=1" target="4Vlql_HxbucCO09blRnh-9" value="Proxy API: /api/*">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="4Vlql_HxbucCO09blRnh-20" edge="1" parent="1" source="4Vlql_HxbucCO09blRnh-8" style="endArrow=block;html=1;strokeWidth=2" target="4Vlql_HxbucCO09blRnh-11" value="Publish telemetry event">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="4Vlql_HxbucCO09blRnh-21" edge="1" parent="1" source="4Vlql_HxbucCO09blRnh-11" style="endArrow=block;html=1;strokeWidth=2" target="4Vlql_HxbucCO09blRnh-10" value="Consume events">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="4Vlql_HxbucCO09blRnh-22" edge="1" parent="1" source="4Vlql_HxbucCO09blRnh-10" style="endArrow=block;html=1;strokeWidth=2" target="4Vlql_HxbucCO09blRnh-12" value="INSERT readings / aggregates">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="4Vlql_HxbucCO09blRnh-23" edge="1" parent="1" source="4Vlql_HxbucCO09blRnh-9" style="endArrow=block;html=1" target="4Vlql_HxbucCO09blRnh-12" value="SELECT readings / aggregates">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

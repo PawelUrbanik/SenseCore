@@ -1,0 +1,88 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36" version="29.3.0">
+  <diagram name="C4 - Component - Query Service" id="ME7YiXUKZl_w3IIcCa7R">
+    <mxGraphModel grid="1" page="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="fvVdSKOAiUNXBVW8SOYB-1" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=18;fontStyle=1" value="C4: Component - Query Service (Spring Boot, Read-only API)" vertex="1">
+          <mxGeometry height="30" width="1000" x="60" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="fvVdSKOAiUNXBVW8SOYB-2" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00" value="Angular Web App&#xa;(Dashboard)" vertex="1">
+          <mxGeometry height="80" width="220" x="60" y="150" as="geometry" />
+        </mxCell>
+        <mxCell id="fvVdSKOAiUNXBVW8SOYB-3" parent="1" style="shape=cylinder;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450" value="PostgreSQL" vertex="1">
+          <mxGeometry height="140" width="280" x="1420" y="260" as="geometry" />
+        </mxCell>
+        <mxCell id="fvVdSKOAiUNXBVW8SOYB-4" parent="1" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=2;fillColor=#dae8fc;strokeColor=#6c8ebf" value="Query Service" vertex="1">
+          <mxGeometry height="560" width="1020" x="340" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="fvVdSKOAiUNXBVW8SOYB-5" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf" value="QueryController&#xa;REST endpoints:&#xa;- /api/devices&#xa;- /api/readings&#xa;- /api/readings/latest" vertex="1">
+          <mxGeometry height="110" width="250" x="380" y="160" as="geometry" />
+        </mxCell>
+        <mxCell id="fvVdSKOAiUNXBVW8SOYB-6" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf;dashed=1" value="AuthN/AuthZ (optional)&#xa;User sessions / JWT&#xa;Role: admin/user" vertex="1">
+          <mxGeometry height="80" width="140" x="740" y="110" as="geometry" />
+        </mxCell>
+        <mxCell id="fvVdSKOAiUNXBVW8SOYB-7" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf" value="ReadingQueryService&#xa;Filtering, pagination, time range&#xa;Chooses raw vs aggregated" vertex="1">
+          <mxGeometry height="90" width="260" x="380" y="320" as="geometry" />
+        </mxCell>
+        <mxCell id="fvVdSKOAiUNXBVW8SOYB-8" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf;dashed=1" value="AggregationService (optional)&#xa;Buckets: 1m/5m/1h&#xa;Downsampling for charts" vertex="1">
+          <mxGeometry height="110" width="280" x="370" y="475" as="geometry" />
+        </mxCell>
+        <mxCell id="fvVdSKOAiUNXBVW8SOYB-9" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf" value="DeviceService&#xa;List devices, metadata, status" vertex="1">
+          <mxGeometry height="80" width="190" x="1105" y="180" as="geometry" />
+        </mxCell>
+        <mxCell id="fvVdSKOAiUNXBVW8SOYB-10" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf" value="ReadingRepository&#xa;SQL queries for readings" vertex="1">
+          <mxGeometry height="80" width="240" x="800" y="410" as="geometry" />
+        </mxCell>
+        <mxCell id="fvVdSKOAiUNXBVW8SOYB-11" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf" value="DeviceRepository&#xa;SQL queries for devices/certs" vertex="1">
+          <mxGeometry height="95" width="125" x="1105" y="530" as="geometry" />
+        </mxCell>
+        <mxCell id="fvVdSKOAiUNXBVW8SOYB-12" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf" value="DTO Mapper&#xa;Entity -&gt; API DTO&#xa;(MapStruct/manual)" vertex="1">
+          <mxGeometry height="80" width="180" x="810" y="545" as="geometry" />
+        </mxCell>
+        <mxCell id="fvVdSKOAiUNXBVW8SOYB-13" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf" value="Observability&#xa;Metrics, logs, tracing" vertex="1">
+          <mxGeometry height="50" width="180" x="780" y="240" as="geometry" />
+        </mxCell>
+        <mxCell id="fvVdSKOAiUNXBVW8SOYB-14" edge="1" parent="1" source="fvVdSKOAiUNXBVW8SOYB-2" style="endArrow=block;html=1;strokeWidth=2" target="fvVdSKOAiUNXBVW8SOYB-5" value="HTTPS">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="fvVdSKOAiUNXBVW8SOYB-15" edge="1" parent="1" source="fvVdSKOAiUNXBVW8SOYB-5" style="endArrow=block;html=1;dashed=1" target="fvVdSKOAiUNXBVW8SOYB-6" value="optional auth">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="fvVdSKOAiUNXBVW8SOYB-16" edge="1" parent="1" source="fvVdSKOAiUNXBVW8SOYB-5" style="endArrow=block;html=1;strokeWidth=2" target="fvVdSKOAiUNXBVW8SOYB-7" value="query readings">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="fvVdSKOAiUNXBVW8SOYB-17" edge="1" parent="1" source="fvVdSKOAiUNXBVW8SOYB-5" style="endArrow=block;html=1;strokeWidth=2" target="fvVdSKOAiUNXBVW8SOYB-9" value="list devices">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="fvVdSKOAiUNXBVW8SOYB-18" edge="1" parent="1" source="fvVdSKOAiUNXBVW8SOYB-7" style="endArrow=block;html=1;dashed=1" target="fvVdSKOAiUNXBVW8SOYB-8" value="optional downsample">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="fvVdSKOAiUNXBVW8SOYB-19" edge="1" parent="1" source="fvVdSKOAiUNXBVW8SOYB-7" style="endArrow=block;html=1;strokeWidth=2" target="fvVdSKOAiUNXBVW8SOYB-10" value="SQL">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="fvVdSKOAiUNXBVW8SOYB-20" edge="1" parent="1" source="fvVdSKOAiUNXBVW8SOYB-9" style="endArrow=block;html=1;strokeWidth=2" target="fvVdSKOAiUNXBVW8SOYB-11" value="SQL">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="fvVdSKOAiUNXBVW8SOYB-21" edge="1" parent="1" source="fvVdSKOAiUNXBVW8SOYB-10" style="endArrow=block;html=1" target="fvVdSKOAiUNXBVW8SOYB-12" value="map to DTO">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="fvVdSKOAiUNXBVW8SOYB-22" edge="1" parent="1" source="fvVdSKOAiUNXBVW8SOYB-11" style="endArrow=block;html=1" target="fvVdSKOAiUNXBVW8SOYB-12" value="map to DTO">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="fvVdSKOAiUNXBVW8SOYB-23" edge="1" parent="1" source="fvVdSKOAiUNXBVW8SOYB-5" style="endArrow=block;html=1" target="fvVdSKOAiUNXBVW8SOYB-13" value="metrics/logs">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="fvVdSKOAiUNXBVW8SOYB-24" edge="1" parent="1" source="fvVdSKOAiUNXBVW8SOYB-7" style="endArrow=block;html=1" target="fvVdSKOAiUNXBVW8SOYB-13" value="metrics/logs">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="fvVdSKOAiUNXBVW8SOYB-25" edge="1" parent="1" source="fvVdSKOAiUNXBVW8SOYB-10" style="endArrow=block;html=1;strokeWidth=2" target="fvVdSKOAiUNXBVW8SOYB-3" value="SQL">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="fvVdSKOAiUNXBVW8SOYB-26" edge="1" parent="1" source="fvVdSKOAiUNXBVW8SOYB-11" style="endArrow=block;html=1;strokeWidth=2" target="fvVdSKOAiUNXBVW8SOYB-3" value="SQL">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
