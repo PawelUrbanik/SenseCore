@@ -25,12 +25,13 @@ services:
       RABBITMQ_DEFAULT_USER: sensecore
       RABBITMQ_DEFAULT_PASS: sensecore
       # Opcjonalnie: domyślny vhost
-      RABBITMQ_DEFAULT_VHOST: /
+      RABBITMQ_LOAD_DEFINITIONS: /etc/rabbitmq/definitions.json
     ports:
       - "5672:5672"     # AMQP
       - "15672:15672"   # Management UI http://localhost:15672
     volumes:
       - sensecore_rabbit_data:/var/lib/rabbitmq
+      - ./rabbitmq/definitions.json:/etc/rabbitmq/definitions.json:ro
     healthcheck:
       test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
       interval: 5s

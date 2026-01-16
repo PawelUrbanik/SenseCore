@@ -1,0 +1,32 @@
+{
+  "exchanges": [
+    {
+      "name": "sensecore.telemetry",
+      "vhost": "/",
+      "type": "direct",
+      "durable": true,
+      "auto_delete": false,
+      "internal": false,
+      "arguments": {}
+    }
+  ],
+  "queues": [
+    {
+      "name": "sensecore.telemetry.temperature",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {}
+    }
+  ],
+  "bindings": [
+    {
+      "source": "sensecore.telemetry",
+      "vhost": "/",
+      "destination": "sensecore.telemetry.temperature",
+      "destination_type": "queue",
+      "routing_key": "temperature",
+      "arguments": {}
+    }
+  ]
+}
