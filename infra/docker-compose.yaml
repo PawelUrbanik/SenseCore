@@ -45,7 +45,7 @@ services:
     image: dpage/pgadmin4:8
     container_name: sensecore-pgadmin
     environment:
-      PGADMIN_DEFAULT_EMAIL: admin@sensecore.local
+      PGADMIN_DEFAULT_EMAIL: admin@sensecore.com
       PGADMIN_DEFAULT_PASSWORD: admin
     ports:
       - "5050:80" # http://localhost:5050
@@ -58,8 +58,8 @@ services:
 
   ingestion-service:
     build:
-      context: ../services/ingestion-service
-      dockerfile: Dockerfile
+      context: ..
+      dockerfile: services/ingestion-service/Dockerfile
     container_name: sensecore-ingestion
     environment:
       SPRING_PROFILES_ACTIVE: docker
@@ -90,8 +90,8 @@ services:
 
   processor-service:
     build:
-      context: ../services/processor-service
-      dockerfile: Dockerfile
+      context: ..
+      dockerfile: services/processor-service/Dockerfile
     container_name: sensecore-processor
     environment:
       SPRING_PROFILES_ACTIVE: docker
@@ -121,8 +121,8 @@ services:
 
   query-service:
     build:
-      context: ../services/query-service
-      dockerfile: Dockerfile
+      context: ..
+      dockerfile: services/query-service/Dockerfile
     container_name: sensecore-query
     environment:
       SPRING_PROFILES_ACTIVE: docker
