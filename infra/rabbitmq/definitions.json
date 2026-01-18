@@ -8,11 +8,30 @@
       "auto_delete": false,
       "internal": false,
       "arguments": {}
+    },
+    {
+      "name": "sensecore.dlx",
+      "vhost": "/",
+      "type": "direct",
+      "durable": true,
+      "auto_delete": false,
+      "internal": false,
+      "arguments": {}
     }
   ],
   "queues": [
     {
       "name": "sensecore.telemetry.temperature",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {
+        "x-dead-letter-exchange": "sensecore.dlx",
+        "x-dead-letter-routing-key": "sensecore.telemetry.temperature"
+      }
+    },
+    {
+      "name": "sensecore.telemetry.temperature.dlq",
       "vhost": "/",
       "durable": true,
       "auto_delete": false,
@@ -27,6 +46,15 @@
       "destination_type": "queue",
       "routing_key": "temperature",
       "arguments": {}
+    },
+    {
+      "source": "sensecore.dlx",
+      "vhost": "/",
+      "destination": "sensecore.telemetry.temperature.dlq",
+      "destination_type": "queue",
+      "routing_key": "sensecore.telemetry.temperature",
+      "arguments": {}
     }
+
   ]
 }
