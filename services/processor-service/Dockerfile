@@ -12,6 +12,7 @@ COPY services/ingestion-service/pom.xml services/ingestion-service/pom.xml
 RUN mvn -q -DskipTests -pl services/processor-service -am dependency:go-offline
 
 COPY services/contracts/src services/contracts/src
+COPY services/persistence/src services/persistence/src
 COPY services/processor-service/src services/processor-service/src
 
 RUN mvn -q -DskipTests -pl services/processor-service -am package
