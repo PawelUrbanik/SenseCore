@@ -4,6 +4,7 @@ WORKDIR /workspace
 # --- Copy root + ALL module POMs (so Maven can read reactor) ---
 COPY pom.xml ./pom.xml
 COPY services/contracts/pom.xml services/contracts/pom.xml
+COPY services/persistence/pom.xml services/persistence/pom.xml
 COPY services/ingestion-service/pom.xml services/ingestion-service/pom.xml
 COPY services/processor-service/pom.xml services/processor-service/pom.xml
 COPY services/query-service/pom.xml services/query-service/pom.xml

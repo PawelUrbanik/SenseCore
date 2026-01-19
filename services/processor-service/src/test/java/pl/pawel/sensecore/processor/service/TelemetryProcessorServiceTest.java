@@ -9,10 +9,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import pl.pawel.sensecore.contracts.SensorType;
 import pl.pawel.sensecore.contracts.TelemetryEvent;
 import pl.pawel.sensecore.contracts.Unit;
-import pl.pawel.sensecore.processor.model.Device;
-import pl.pawel.sensecore.processor.model.TelemetryReading;
-import pl.pawel.sensecore.processor.repository.DeviceRepository;
-import pl.pawel.sensecore.processor.repository.TelemetryReadingRepository;
+import pl.pawel.sensecore.persistence.entity.Device;
+import pl.pawel.sensecore.persistence.entity.TelemetryReading;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -21,6 +19,8 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import org.springframework.amqp.AmqpRejectAndDontRequeueException;
+import pl.pawel.sensecore.processor.repository.DeviceRepository;
+import pl.pawel.sensecore.processor.repository.TelemetryReadingRepository;
 
 @ExtendWith(MockitoExtension.class)
 class TelemetryProcessorServiceTest {

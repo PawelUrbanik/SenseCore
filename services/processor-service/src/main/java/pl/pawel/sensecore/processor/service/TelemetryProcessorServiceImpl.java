@@ -4,7 +4,8 @@ import jakarta.transaction.Transactional;
 import org.springframework.amqp.AmqpRejectAndDontRequeueException;
 import org.springframework.stereotype.Service;
 import pl.pawel.sensecore.contracts.TelemetryEvent;
-import pl.pawel.sensecore.processor.model.TelemetryReading;
+
+import pl.pawel.sensecore.persistence.entity.TelemetryReading;
 import pl.pawel.sensecore.processor.repository.DeviceRepository;
 import pl.pawel.sensecore.processor.repository.TelemetryReadingRepository;
 

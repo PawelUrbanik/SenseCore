@@ -1,4 +1,4 @@
-package pl.pawel.sensecore.processor.model;
+package pl.pawel.sensecore.persistence.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

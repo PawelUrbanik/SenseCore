@@ -2,7 +2,7 @@ package pl.pawel.sensecore.processor.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import pl.pawel.sensecore.processor.model.Device;
+import pl.pawel.sensecore.persistence.entity.Device;
 
 import java.util.Optional;
 

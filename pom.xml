@@ -17,6 +17,7 @@
 
     <modules>
         <module>services/contracts</module>
+        <module>services/persistence</module>
         <module>services/ingestion-service</module>
         <module>services/processor-service</module>
         <module>services/query-service</module>
