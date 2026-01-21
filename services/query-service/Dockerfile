@@ -14,6 +14,7 @@ RUN mvn -q -DskipTests -pl services/query-service -am dependency:go-offline
 
 # --- Copy sources only for required modules ---
 COPY services/contracts/src services/contracts/src
+COPY services/persistence/src services/persistence/src
 COPY services/query-service/src services/query-service/src
 
 RUN mvn -q -DskipTests -pl services/query-service -am package
