@@ -12,3 +12,5 @@ spring:
     open-in-view: false
 server:
   port: 8083
+  servlet:
+    context-path: "/api"
