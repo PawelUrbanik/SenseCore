@@ -40,7 +40,7 @@ services:
     networks:
       - sensecore
 
-  # Opcjonalnie: wygodny UI do bazy
+
   pgadmin:
     image: dpage/pgadmin4:8
     container_name: sensecore-pgadmin
@@ -74,7 +74,6 @@ services:
       SPRING_RABBITMQ_USERNAME: sensecore
       SPRING_RABBITMQ_PASSWORD: sensecore
 
-      # Ustal sobie spójne nazwy eventów
       SENSECORE_TELEMETRY_EXCHANGE: sensecore.telemetry
       SENSECORE_TEMPERATURE_ROUTING_KEY: temperature
       SENSECORE_TEMPERATURE_QUEUE: sensecore.telemetry.temperature
