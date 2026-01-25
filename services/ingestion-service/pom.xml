@@ -69,6 +69,19 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- Entities -->
+        <dependency>
+            <groupId>pl.pawel.sensecore</groupId>
+            <artifactId>persistence</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>pl.pawel.sensecore</groupId>
+            <artifactId>contracts</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
