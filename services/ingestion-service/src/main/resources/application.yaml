@@ -1,5 +1,26 @@
 spring:
   application:
     name: "ingestion-service"
+  rabbitmq:
+    host: ${SPRING_RABBITMQ_HOST:rabbitmq}
+    port: ${SPRING_RABBITMQ_PORT:5672}
+    username: ${SPRING_RABBITMQ_USERNAME:sensecore}
+    password: ${SPRING_RABBITMQ_PASSWORD:sensecore}
+    virtual-host: ${SPRING_RABBITMQ_VHOST:/}
+
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://postgres:5432/sensecore}
+    username: ${SPRING_DATASOURCE_USERNAME:sensecore}
+    password: ${SPRING_DATASOURCE_PASSWORD:sensecore}
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
 server:
-  port: 8081
+  port: ${SERVER_PORT:8081}
+
+sensecore:
+  rabbit:
+    telemetryExchange: ${SENSECORE_TELEMETRY_EXCHANGE:sensecore.telemetry}
+    temperatureRoutingKey: ${SENSECORE_TEMPERATURE_ROUTING_KEY:temperature}
