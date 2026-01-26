@@ -27,4 +27,7 @@ public class Device {
 
     @Column(name = "created_at", nullable = false)
     private Instant createdAt = Instant.now();
+
+    @Column(name = "fingerprint", unique = true)
+    private String fingerprint;
 }
