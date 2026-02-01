@@ -11,7 +11,7 @@ import java.time.Instant;
 
 @Component
 public class TelemetryEnricher {
-    private final String SCHEMA_VERSION = "v!";
+    private final String SCHEMA_VERSION = "v1";
 
 
     public TelemetryEvent toTelemetryEvent(Device device, TelemetryIngestRequest request) {

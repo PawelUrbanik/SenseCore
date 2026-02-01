@@ -9,7 +9,7 @@ public class ClientIdentityExtractor {
     private static final String HEADER_VERIFY= "X-SSL-Client-Verify";
     private static final String HEADER_FINGERPRINT = "X-SSL-Client-Fingerprint";
 //    private static final String HEADER_DN = "X-SSL-Client-DN";
-    private static final String HEADER_XFF = "X-Forwarder-For";
+    private static final String HEADER_XFF = "X-Forwarded-For";
 
     public ClientIdentity extract(HttpServletRequest request) {
         String verify = header(request, HEADER_VERIFY);
