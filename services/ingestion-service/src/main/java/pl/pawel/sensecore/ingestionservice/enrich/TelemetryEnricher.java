@@ -1,5 +1,6 @@
 package pl.pawel.sensecore.ingestionservice.enrich;
 
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;
 import pl.pawel.sensecore.contracts.SensorType;
 import pl.pawel.sensecore.contracts.TelemetryEvent;
@@ -10,13 +11,18 @@ import pl.pawel.sensecore.persistence.entity.Device;
 import java.time.Instant;
 
 @Component
+@Log4j2
 public class TelemetryEnricher {
     private final String SCHEMA_VERSION = "v1";
 
 
     public TelemetryEvent toTelemetryEvent(Device device, TelemetryIngestRequest request) {
+        log.debug("Fulfilling timestamp if empty in request");
         Instant ts = (request.timestamp() != null) ? request.timestamp() : Instant.now();
+        log.debug("Parsing unit: " + request.unit());
         Unit unit = parseUnit(request.unit());
+
+        log.debug("Fetching sensore Type for unit");
         SensorType sensorType = getSensorType(unit);
 
         return new TelemetryEvent(SCHEMA_VERSION,  device.getDeviceId(), sensorType, request.value(), unit, ts);

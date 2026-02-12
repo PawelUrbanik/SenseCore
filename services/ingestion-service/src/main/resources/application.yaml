@@ -24,3 +24,7 @@ sensecore:
   rabbit:
     telemetryExchange: ${SENSECORE_TELEMETRY_EXCHANGE:sensecore.telemetry}
     temperatureRoutingKey: ${SENSECORE_TEMPERATURE_ROUTING_KEY:temperature}
+
+logging:
+  level:
+    pl.pawel.sensecore.ingestionservice.*: debug
