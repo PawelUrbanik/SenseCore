@@ -29,7 +29,12 @@ public class TelemetryIngestController {
     public ResponseEntity<Void> ingest(
             @RequestBody TelemetryIngestRequest body,
             HttpServletRequest request) {
-        log.debug("Receive request from: : " + request.getRemoteAddr() + " with body: " + body);
+        log.debug(
+                "Received ingest request: remoteIp={}, unit={}, timestampPresent={}",
+                request.getRemoteAddr(),
+                body.unit(),
+                body.timestamp() != null
+        );
         ClientIdentity identity = clientIdentityExtractor.extract(request);
         ingestionService.ingest(identity, body);
         return ResponseEntity.accepted().build();

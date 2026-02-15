@@ -16,12 +16,17 @@ public class PayloadValidator {
     public void validateTemperature(TelemetryIngestRequest request) {
         log.debug("Validating temperature value");
         if (request.value() == null) {
-            log.error("Temperature is null");
+            log.warn("Temperature is null");
             throw new IllegalArgumentException("value is required");
         }
-        log.debug("Validating temperature range, min="+ TEMPERATURE_MIN + ", max=" + TEMPERATURE_MAX + ", actual="+ request.value());
+        log.debug(
+                "Validating temperature range: min={}, max={}, actual={}",
+                TEMPERATURE_MIN,
+                TEMPERATURE_MAX,
+                request.value()
+        );
         if (request.value().compareTo(TEMPERATURE_MIN) < 0 || request.value().compareTo(TEMPERATURE_MAX) > 0) {
-            log.error("Temperature out of range!");
+            log.warn("Temperature out of range");
             throw  new IllegalArgumentException("temperature out of range: MIN: " + TEMPERATURE_MIN + " or MAX: " + TEMPERATURE_MAX);
         }
     }

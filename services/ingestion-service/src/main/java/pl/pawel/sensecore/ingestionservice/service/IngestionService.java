@@ -29,14 +29,26 @@ public class IngestionService {
 
 
     public void ingest(ClientIdentity identity, TelemetryIngestRequest request) {
-        log.debug("Looking for device with fingerprint: " + identity.fingerprint());
+        log.debug("Resolving active device by fingerprint prefix={}", maskFingerprint(identity.fingerprint()));
         Device device = deviceRegistryServices.resolveActiveDeviceByFingerprint(identity.fingerprint());
-        log.debug("Found device: " + device);
+        log.debug("Resolved active deviceId={}", device.getDeviceId());
 
         payloadValidator.validateTemperature(request);
 
         TelemetryEvent event = telemetryEnricher.toTelemetryEvent(device, request);
-        log.debug("Publishing event: " + event);
+        log.debug(
+                "Publishing telemetry event: deviceId={}, sensorType={}, timestamp={}",
+                event.deviceId(),
+                event.sensorType(),
+                event.timestamp()
+        );
         telemetryPublisher.publishTelemetryEvent(event, identity);
+    }
+
+    private String maskFingerprint(String fingerprint) {
+        if (fingerprint == null || fingerprint.isBlank()) {
+            return "n/a";
+        }
+        return fingerprint.length() <= 8 ? fingerprint : fingerprint.substring(0, 8);
     }
 }

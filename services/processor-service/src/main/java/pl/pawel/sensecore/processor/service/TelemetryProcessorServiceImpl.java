@@ -30,7 +30,7 @@ public class TelemetryProcessorServiceImpl implements TelemetryProcessorService 
     public void process(TelemetryEvent event) {
         validate(event);
 
-        log.debug("Looking for device with id: " + event.deviceId());
+        log.debug("Looking for device with id={}", event.deviceId());
         deviceRepository.findByDeviceId(event.deviceId()).orElseThrow(
                 () -> new AmqpRejectAndDontRequeueException("Invalid device id")
         );
@@ -44,7 +44,7 @@ public class TelemetryProcessorServiceImpl implements TelemetryProcessorService 
         telemetryReading.setUnit(event.unit().getSymbol());
         telemetryReading.setTimestamp(event.timestamp());
         telemetryReading.setReceivedAt(Instant.now());
-        log.debug("Created Telemetry reading entity: " + telemetryReading);
+        log.debug("Created telemetry reading entity for deviceId={}", telemetryReading.getDeviceId());
 
         log.debug("Saving entity to DB");
         telemetryReadingRepository.save(telemetryReading);

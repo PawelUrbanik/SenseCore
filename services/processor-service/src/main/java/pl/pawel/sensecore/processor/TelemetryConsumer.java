@@ -17,7 +17,7 @@ public class TelemetryConsumer {
 
     @RabbitListener(queues = "${SENSECORE_TEMPERATURE_QUEUE:sensecore.telemetry.temperature}")
     public void onMessage(TelemetryEvent payload) {
-        log.info("Received telemetry: deviceId={}, sensorType={}, value={}, unit={}, ts={}",
+        log.debug("Received telemetry: deviceId={}, sensorType={}, value={}, unit={}, ts={}",
                 payload.deviceId(), payload.sensorType(), payload.value(), payload.unit(), payload.timestamp());
 
         telemetryProcessorService.process(payload);

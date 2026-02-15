@@ -25,7 +25,7 @@ public class TelemetryQueryServiceImpl implements TelemetryQueryService {
 
     @Override
     public TelemetryReadingDto latest(String deviceId, String sensorType) {
-        log.debug("Reading latest telemetry event with deviceId: " + deviceId + " and sensorType: " + sensorType);
+        log.debug("Reading latest telemetry event with deviceId={}, sensorType={}", deviceId, sensorType);
         return readingRepository.findFirstByDeviceIdAndSensorTypeOrderByTimestampDesc(deviceId, normalizeSensorType(sensorType))
                 .map(mapper::toDto)
                 .orElse(null);
@@ -34,7 +34,14 @@ public class TelemetryQueryServiceImpl implements TelemetryQueryService {
     @Override
     public List<TelemetryReadingDto> history(String deviceId, String sensorType, Instant from, Instant to, int limit) {
         int safeLimit = (limit <= 0 || limit > 2000) ? 200 : limit;
-        log.debug("Reading history events with deviceId: "  + deviceId + ", sensorType: " + sensorType + ", from " + from +", to " + to + ", limit " + safeLimit);
+        log.debug(
+                "Reading history events with deviceId={}, sensorType={}, from={}, to={}, limit={}",
+                deviceId,
+                sensorType,
+                from,
+                to,
+                safeLimit
+        );
         return readingRepository.findHistory(deviceId, normalizeSensorType(sensorType), from, to, PageRequest.of(0, safeLimit))
                 .stream()
                 .map(mapper::toDto)
