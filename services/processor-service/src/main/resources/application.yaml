@@ -31,4 +31,4 @@ spring:
           max-interval: 5s
 logging:
   level:
-    pl.pawel.sensecore.processor.*: debug
+    pl.pawel.sensecore.processor.*: ${PROCESSOR_LOGGING_LEVEL:info}

@@ -27,4 +27,4 @@ sensecore:
 
 logging:
   level:
-    pl.pawel.sensecore.ingestionservice.*: debug
+    pl.pawel.sensecore.ingestionservice.*: ${INGESTION_LOGGING_LEVEL:info}
