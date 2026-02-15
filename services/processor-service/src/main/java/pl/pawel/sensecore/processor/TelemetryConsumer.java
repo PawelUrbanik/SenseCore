@@ -1,16 +1,14 @@
 package pl.pawel.sensecore.processor;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 import pl.pawel.sensecore.contracts.TelemetryEvent;
 import pl.pawel.sensecore.processor.service.TelemetryProcessorService;
 
 @Component
+@Log4j2
 public class TelemetryConsumer {
-
-    private static final Logger log = LoggerFactory.getLogger(TelemetryConsumer.class);
     private final TelemetryProcessorService telemetryProcessorService;
 
     public TelemetryConsumer(TelemetryProcessorService telemetryProcessorService) {

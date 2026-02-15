@@ -29,3 +29,6 @@ spring:
           max-attempts: 3
           multiplier: 2.0
           max-interval: 5s
+logging:
+  level:
+    pl.pawel.sensecore.processor.*: debug
