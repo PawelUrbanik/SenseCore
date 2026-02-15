@@ -16,4 +16,4 @@ server:
     context-path: "/api"
 logging:
   level:
-    pl.pawel.sensecore.query.*: ${QUERY_LOGGING_LEVEL:info}
+    pl.pawel.sensecore.query: ${QUERY_LOGGING_LEVEL:info}
