@@ -128,6 +128,7 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE: docker
       SERVER_PORT: 8083
+      QUERY_LOGGING_LEVEL: debug
 
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/sensecore
       SPRING_DATASOURCE_USERNAME: sensecore
