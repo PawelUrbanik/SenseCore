@@ -4,6 +4,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.amqp.AmqpException;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.amqp.core.MessagePostProcessor;
+import org.slf4j.MDC;
 import org.springframework.stereotype.Service;
 import pl.pawel.sensecore.contracts.TelemetryEvent;
 import pl.pawel.sensecore.ingestionservice.messaging.properties.RabbitProps;
@@ -15,6 +16,14 @@ import java.util.Map;
 @Service
 @Log4j2
 public class TelemetryPublisher {
+    private static final String HEADER_CLIENT_IP = "x-client-ip";
+    private static final String HEADER_REQUEST_ID = "x-request-id";
+    private static final String HEADER_TRACE_ID = "x-trace-id";
+    private static final String HEADER_DEVICE_ID = "x-device-id";
+
+    private static final String MDC_REQUEST_ID = "requestId";
+    private static final String MDC_TRACE_ID = "traceId";
+    private static final String MDC_DEVICE_ID = "deviceId";
 
     private final AmqpTemplate amqp;
     private final RabbitProps props;
@@ -28,7 +37,12 @@ public class TelemetryPublisher {
     public void publishTelemetryEvent(TelemetryEvent event, ClientIdentity identity) {
 
         Map<String, Object> headers = new HashMap<>();
-        if (identity.ip() != null) headers.put("x-client-ip", identity.ip());
+        if (identity.ip() != null) {
+            headers.put(HEADER_CLIENT_IP, identity.ip());
+        }
+        putIfPresent(headers, HEADER_REQUEST_ID, MDC.get(MDC_REQUEST_ID));
+        putIfPresent(headers, HEADER_TRACE_ID, MDC.get(MDC_TRACE_ID));
+        putIfPresent(headers, HEADER_DEVICE_ID, MDC.get(MDC_DEVICE_ID));
 
         MessagePostProcessor mpp = msg -> {
             headers.forEach((k, v) -> msg.getMessageProperties().setHeader(k, v));
@@ -58,6 +72,12 @@ public class TelemetryPublisher {
                     ex
             );
             throw ex;
+        }
+    }
+
+    private void putIfPresent(Map<String, Object> headers, String key, String value) {
+        if (value != null && !value.isBlank()) {
+            headers.put(key, value);
         }
     }
 }

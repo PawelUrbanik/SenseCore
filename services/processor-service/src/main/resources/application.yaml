@@ -30,5 +30,7 @@ spring:
           multiplier: 2.0
           max-interval: 5s
 logging:
+  pattern:
+    level: "%5p [reqId=%X{requestId:-} traceId=%X{traceId:-} deviceId=%X{deviceId:-}]"
   level:
     pl.pawel.sensecore.processor: ${PROCESSOR_LOGGING_LEVEL:info}

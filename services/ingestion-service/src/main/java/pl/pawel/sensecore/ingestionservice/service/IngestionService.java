@@ -14,6 +14,7 @@ import pl.pawel.sensecore.persistence.entity.Device;
 @Log4j2
 @Service
 public class IngestionService {
+    private static final String MDC_DEVICE_ID = "deviceId";
 
     private final DeviceRegistryService deviceRegistryServices;
     private final PayloadValidator payloadValidator;
@@ -31,18 +32,24 @@ public class IngestionService {
     public void ingest(ClientIdentity identity, TelemetryIngestRequest request) {
         log.debug("Resolving active device by fingerprint prefix={}", maskFingerprint(identity.fingerprint()));
         Device device = deviceRegistryServices.resolveActiveDeviceByFingerprint(identity.fingerprint());
-        log.debug("Resolved active deviceId={}", device.getDeviceId());
+        String previousDeviceId = MDC.get(MDC_DEVICE_ID);
+        MDC.put(MDC_DEVICE_ID, device.getDeviceId());
+        try {
+            log.debug("Resolved active deviceId={}", device.getDeviceId());
 
-        payloadValidator.validateTemperature(request);
+            payloadValidator.validateTemperature(request);
 
-        TelemetryEvent event = telemetryEnricher.toTelemetryEvent(device, request);
-        log.debug(
-                "Publishing telemetry event: deviceId={}, sensorType={}, timestamp={}",
-                event.deviceId(),
-                event.sensorType(),
-                event.timestamp()
-        );
-        telemetryPublisher.publishTelemetryEvent(event, identity);
+            TelemetryEvent event = telemetryEnricher.toTelemetryEvent(device, request);
+            log.debug(
+                    "Publishing telemetry event: deviceId={}, sensorType={}, timestamp={}",
+                    event.deviceId(),
+                    event.sensorType(),
+                    event.timestamp()
+            );
+            telemetryPublisher.publishTelemetryEvent(event, identity);
+        } finally {
+            restoreMdcValue(MDC_DEVICE_ID, previousDeviceId);
+        }
     }
 
     private String maskFingerprint(String fingerprint) {
@@ -50,5 +57,13 @@ public class IngestionService {
             return "n/a";
         }
         return fingerprint.length() <= 8 ? fingerprint : fingerprint.substring(0, 8);
+    }
+
+    private void restoreMdcValue(String key, String previousValue) {
+        if (previousValue == null) {
+            MDC.remove(key);
+            return;
+        }
+        MDC.put(key, previousValue);
     }
 }

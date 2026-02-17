@@ -26,5 +26,7 @@ sensecore:
     temperatureRoutingKey: ${SENSECORE_TEMPERATURE_ROUTING_KEY:temperature}
 
 logging:
+  pattern:
+    level: "%5p [reqId=%X{requestId:-} traceId=%X{traceId:-} deviceId=%X{deviceId:-}]"
   level:
     pl.pawel.sensecore.ingestionservice: ${INGESTION_LOGGING_LEVEL:info}
