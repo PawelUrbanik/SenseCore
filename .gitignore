@@ -47,3 +47,13 @@ yarn-error.log*
 # OS
 .DS_Store
 Thumbs.db
+
+# TLS keys/certs
+infra/nginx/certs/*.key
+infra/nginx/certs/*.crt
+infra/nginx/certs/*.csr
+infra/nginx/certs/*.srl
+infra/nginx/certs/*.ext
+
+# build artifacts
+services/**/target/
