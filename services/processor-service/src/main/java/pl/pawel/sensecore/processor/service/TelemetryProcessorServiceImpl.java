@@ -1,7 +1,7 @@
 package pl.pawel.sensecore.processor.service;
 
 import jakarta.transaction.Transactional;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.AmqpRejectAndDontRequeueException;
 import org.springframework.stereotype.Service;
 import pl.pawel.sensecore.contracts.TelemetryEvent;
@@ -14,7 +14,7 @@ import java.time.Instant;
 import static org.apache.logging.log4j.util.Strings.isBlank;
 
 @Service
-@Log4j2
+@Slf4j
 public class TelemetryProcessorServiceImpl implements TelemetryProcessorService {
 
     private final DeviceRepository deviceRepository;

@@ -1,6 +1,6 @@
 package pl.pawel.sensecore.processor;
 
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.messaging.handler.annotation.Headers;
@@ -11,7 +11,7 @@ import pl.pawel.sensecore.processor.service.TelemetryProcessorService;
 import java.util.Map;
 
 @Component
-@Log4j2
+@Slf4j
 public class TelemetryConsumer {
     private static final String HEADER_REQUEST_ID = "x-request-id";
     private static final String HEADER_TRACE_ID = "x-trace-id";

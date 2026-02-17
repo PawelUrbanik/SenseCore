@@ -1,11 +1,11 @@
 package pl.pawel.sensecore.ingestionservice.security;
 
 import jakarta.servlet.http.HttpServletRequest;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 @Component
-@Log4j2
+@Slf4j
 public class ClientIdentityExtractor {
 
     private static final String HEADER_VERIFY= "X-SSL-Client-Verify";

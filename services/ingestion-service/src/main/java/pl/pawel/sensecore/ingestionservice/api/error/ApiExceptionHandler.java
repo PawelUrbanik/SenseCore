@@ -1,7 +1,7 @@
 package pl.pawel.sensecore.ingestionservice.api.error;
 
 import jakarta.servlet.http.HttpServletRequest;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -12,7 +12,7 @@ import pl.pawel.sensecore.ingestionservice.security.UnauthorizedException;
 import java.time.Instant;
 
 @RestControllerAdvice
-@Log4j2
+@Slf4j
 public class ApiExceptionHandler {
 
     @ExceptionHandler(UnauthorizedException.class)

@@ -1,13 +1,13 @@
 package pl.pawel.sensecore.ingestionservice.validation;
 
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import pl.pawel.sensecore.ingestionservice.api.dto.TelemetryIngestRequest;
 
 import java.math.BigDecimal;
 
 @Component
-@Log4j2
+@Slf4j
 public class PayloadValidator {
 
     private static final BigDecimal TEMPERATURE_MIN = new BigDecimal("-50");

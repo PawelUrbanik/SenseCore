@@ -1,7 +1,7 @@
 package pl.pawel.sensecore.ingestionservice.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,7 +17,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/ingest")
-@Log4j2
+@Slf4j
 public class TelemetryIngestController {
 
     private static final String HEADER_REQUEST_ID = "X-Request-Id";

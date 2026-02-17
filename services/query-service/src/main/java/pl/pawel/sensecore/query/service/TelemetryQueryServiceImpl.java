@@ -1,6 +1,6 @@
 package pl.pawel.sensecore.query.service;
 
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import pl.pawel.sensecore.query.model.TelemetryReadingDto;
@@ -10,7 +10,7 @@ import pl.pawel.sensecore.query.repository.TelemetryReadingRepository;
 import java.time.Instant;
 import java.util.List;
 
-@Log4j2
+@Slf4j
 @Service
 public class TelemetryQueryServiceImpl implements TelemetryQueryService {
 

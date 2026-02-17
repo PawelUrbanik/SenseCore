@@ -1,6 +1,6 @@
 package pl.pawel.sensecore.ingestionservice.messaging;
 
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.AmqpException;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.amqp.core.MessagePostProcessor;
@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Service
-@Log4j2
+@Slf4j
 public class TelemetryPublisher {
     private static final String HEADER_CLIENT_IP = "x-client-ip";
     private static final String HEADER_REQUEST_ID = "x-request-id";

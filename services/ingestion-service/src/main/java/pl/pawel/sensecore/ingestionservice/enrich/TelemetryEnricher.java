@@ -1,6 +1,6 @@
 package pl.pawel.sensecore.ingestionservice.enrich;
 
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import pl.pawel.sensecore.contracts.SensorType;
 import pl.pawel.sensecore.contracts.TelemetryEvent;
@@ -11,7 +11,7 @@ import pl.pawel.sensecore.persistence.entity.Device;
 import java.time.Instant;
 
 @Component
-@Log4j2
+@Slf4j
 public class TelemetryEnricher {
     private static final String SCHEMA_VERSION = "v1";
 

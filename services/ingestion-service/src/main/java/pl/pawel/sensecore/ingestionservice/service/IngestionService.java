@@ -1,6 +1,7 @@
 package pl.pawel.sensecore.ingestionservice.service;
 
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.MDC;
 import org.springframework.stereotype.Service;
 import pl.pawel.sensecore.contracts.TelemetryEvent;
 import pl.pawel.sensecore.ingestionservice.api.dto.TelemetryIngestRequest;
@@ -11,7 +12,7 @@ import pl.pawel.sensecore.ingestionservice.security.ClientIdentity;
 import pl.pawel.sensecore.ingestionservice.validation.PayloadValidator;
 import pl.pawel.sensecore.persistence.entity.Device;
 
-@Log4j2
+@Slf4j
 @Service
 public class IngestionService {
     private static final String MDC_DEVICE_ID = "deviceId";
