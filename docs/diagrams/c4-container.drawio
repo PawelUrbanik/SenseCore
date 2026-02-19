@@ -55,10 +55,10 @@
         <mxCell id="4Vlql_HxbucCO09blRnh-17" edge="1" parent="1" source="4Vlql_HxbucCO09blRnh-6" style="endArrow=block;html=1" target="4Vlql_HxbucCO09blRnh-7" value="Serves Angular static files">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="4Vlql_HxbucCO09blRnh-18" edge="1" parent="1" source="4Vlql_HxbucCO09blRnh-6" style="endArrow=block;html=1" target="4Vlql_HxbucCO09blRnh-8" value="Proxy API: /ingest/*">
+        <mxCell id="4Vlql_HxbucCO09blRnh-18" edge="1" parent="1" source="4Vlql_HxbucCO09blRnh-6" style="endArrow=block;html=1" target="4Vlql_HxbucCO09blRnh-8" value="Proxy API: /api/ingest/*">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="4Vlql_HxbucCO09blRnh-19" edge="1" parent="1" source="4Vlql_HxbucCO09blRnh-6" style="endArrow=block;html=1" target="4Vlql_HxbucCO09blRnh-9" value="Proxy API: /api/*">
+        <mxCell id="4Vlql_HxbucCO09blRnh-19" edge="1" parent="1" source="4Vlql_HxbucCO09blRnh-6" style="endArrow=block;html=1" target="4Vlql_HxbucCO09blRnh-9" value="Proxy API: /devices, /telemetry">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="4Vlql_HxbucCO09blRnh-20" edge="1" parent="1" source="4Vlql_HxbucCO09blRnh-8" style="endArrow=block;html=1;strokeWidth=2" target="4Vlql_HxbucCO09blRnh-11" value="Publish telemetry event">
@@ -77,3 +77,4 @@
     </mxGraphModel>
   </diagram>
 </mxfile>
+

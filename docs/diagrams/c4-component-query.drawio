@@ -16,13 +16,13 @@
         <mxCell id="fvVdSKOAiUNXBVW8SOYB-4" parent="1" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=2;fillColor=#dae8fc;strokeColor=#6c8ebf" value="Query Service" vertex="1">
           <mxGeometry height="560" width="1020" x="340" y="100" as="geometry" />
         </mxCell>
-        <mxCell id="fvVdSKOAiUNXBVW8SOYB-5" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf" value="QueryController&#xa;REST endpoints:&#xa;- /api/devices&#xa;- /api/readings&#xa;- /api/readings/latest" vertex="1">
+        <mxCell id="fvVdSKOAiUNXBVW8SOYB-5" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf" value="DeviceController + TelemetryReadingController&#xa;REST endpoints:&#xa;- /devices&#xa;- /telemetry/latest&#xa;- /telemetry/history" vertex="1">
           <mxGeometry height="110" width="250" x="380" y="160" as="geometry" />
         </mxCell>
         <mxCell id="fvVdSKOAiUNXBVW8SOYB-6" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf;dashed=1" value="AuthN/AuthZ (optional)&#xa;User sessions / JWT&#xa;Role: admin/user" vertex="1">
           <mxGeometry height="80" width="140" x="740" y="110" as="geometry" />
         </mxCell>
-        <mxCell id="fvVdSKOAiUNXBVW8SOYB-7" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf" value="ReadingQueryService&#xa;Filtering, pagination, time range&#xa;Chooses raw vs aggregated" vertex="1">
+        <mxCell id="fvVdSKOAiUNXBVW8SOYB-7" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf" value="TelemetryQueryService&#xa;Filtering, pagination, time range&#xa;Chooses raw vs aggregated" vertex="1">
           <mxGeometry height="90" width="260" x="380" y="320" as="geometry" />
         </mxCell>
         <mxCell id="fvVdSKOAiUNXBVW8SOYB-8" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf;dashed=1" value="AggregationService (optional)&#xa;Buckets: 1m/5m/1h&#xa;Downsampling for charts" vertex="1">
@@ -31,7 +31,7 @@
         <mxCell id="fvVdSKOAiUNXBVW8SOYB-9" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf" value="DeviceService&#xa;List devices, metadata, status" vertex="1">
           <mxGeometry height="80" width="190" x="1105" y="180" as="geometry" />
         </mxCell>
-        <mxCell id="fvVdSKOAiUNXBVW8SOYB-10" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf" value="ReadingRepository&#xa;SQL queries for readings" vertex="1">
+        <mxCell id="fvVdSKOAiUNXBVW8SOYB-10" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf" value="TelemetryReadingRepository&#xa;SQL queries for readings" vertex="1">
           <mxGeometry height="80" width="240" x="800" y="410" as="geometry" />
         </mxCell>
         <mxCell id="fvVdSKOAiUNXBVW8SOYB-11" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf" value="DeviceRepository&#xa;SQL queries for devices/certs" vertex="1">
@@ -86,3 +86,4 @@
     </mxGraphModel>
   </diagram>
 </mxfile>
+

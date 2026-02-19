@@ -19,22 +19,22 @@
         <mxCell id="zQuCzMYY4mkSFYt2EzfF-5" parent="1" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=2;fillColor=#d5e8d4;strokeColor=#82b366" value="Ingestion Service" vertex="1">
           <mxGeometry height="560" width="1020" x="340" y="110" as="geometry" />
         </mxCell>
-        <mxCell id="zQuCzMYY4mkSFYt2EzfF-6" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366" value="TemperatureIngestController&#xa;REST endpoint: /api/ingest/v1/temperature" vertex="1">
+        <mxCell id="zQuCzMYY4mkSFYt2EzfF-6" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366" value="TelemetryIngestController&#xa;REST endpoint: /api/ingest/telemetry" vertex="1">
           <mxGeometry height="90" width="230" x="385" y="170" as="geometry" />
         </mxCell>
-        <mxCell id="zQuCzMYY4mkSFYt2EzfF-7" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366" value="ClientIdentityExtractor&#xa;Reads fingerprint / DN from headers&#xa;(set by Nginx)" vertex="1">
+        <mxCell id="zQuCzMYY4mkSFYt2EzfF-7" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366" value="ClientIdentityExtractor&#xa;Reads X-SSL-Client-Verify + X-SSL-Client-Cert&#xa;(set by Nginx)" vertex="1">
           <mxGeometry height="90" width="240" x="780" y="170" as="geometry" />
         </mxCell>
         <mxCell id="zQuCzMYY4mkSFYt2EzfF-8" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366" value="DeviceRegistryService&#xa;Fingerprint -&gt; Device&#xa;Checks ACTIVE/REVOKED" vertex="1">
           <mxGeometry height="80" width="180" x="1140" y="170" as="geometry" />
         </mxCell>
-        <mxCell id="zQuCzMYY4mkSFYt2EzfF-9" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366" value="PayloadValidator&#xa;Schema + ranges&#xa;Dedup key building (optional)" vertex="1">
+        <mxCell id="zQuCzMYY4mkSFYt2EzfF-9" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366" value="PayloadValidator&#xa;Schema + ranges" vertex="1">
           <mxGeometry height="90" width="240" x="380" y="340" as="geometry" />
         </mxCell>
-        <mxCell id="zQuCzMYY4mkSFYt2EzfF-10" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366" value="TelemetryEnricher&#xa;Adds receivedAt, ip, deviceId&#xa;Normalizes timestamps" vertex="1">
+        <mxCell id="zQuCzMYY4mkSFYt2EzfF-10" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366" value="TelemetryEnricher&#xa;Normalizes timestamps&#xa;Resolves unit + sensor type" vertex="1">
           <mxGeometry height="90" width="150" x="866" y="490" as="geometry" />
         </mxCell>
-        <mxCell id="zQuCzMYY4mkSFYt2EzfF-11" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366" value="TelemetryPublisher&#xa;Publishes event to RabbitMQ&#xa;(confirm / retry policy)" vertex="1">
+        <mxCell id="zQuCzMYY4mkSFYt2EzfF-11" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366" value="TelemetryPublisher&#xa;Publishes event to RabbitMQ" vertex="1">
           <mxGeometry height="120" width="150" x="1150" y="450" as="geometry" />
         </mxCell>
         <mxCell id="zQuCzMYY4mkSFYt2EzfF-12" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366;dashed=1" value="IdempotencyStore (optional)&#xa;Detects duplicates&#xa;(Redis / DB / in-memory)" vertex="1">
@@ -46,7 +46,7 @@
         <mxCell id="zQuCzMYY4mkSFYt2EzfF-14" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366" value="DeviceRepository&#xa;DB access for devices/certs" vertex="1">
           <mxGeometry height="70" width="190" x="1130" y="320" as="geometry" />
         </mxCell>
-        <mxCell id="zQuCzMYY4mkSFYt2EzfF-15" edge="1" parent="1" source="zQuCzMYY4mkSFYt2EzfF-2" style="endArrow=block;html=1;strokeWidth=2" target="zQuCzMYY4mkSFYt2EzfF-6" value="HTTPS (internal)&#xa;+ client fingerprint header">
+        <mxCell id="zQuCzMYY4mkSFYt2EzfF-15" edge="1" parent="1" source="zQuCzMYY4mkSFYt2EzfF-2" style="endArrow=block;html=1;strokeWidth=2" target="zQuCzMYY4mkSFYt2EzfF-6" value="HTTPS (internal)&#xa;+ client cert headers">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="zQuCzMYY4mkSFYt2EzfF-16" edge="1" parent="1" source="zQuCzMYY4mkSFYt2EzfF-6" style="endArrow=block;html=1" target="zQuCzMYY4mkSFYt2EzfF-7" value="extract identity">
@@ -86,3 +86,4 @@
     </mxGraphModel>
   </diagram>
 </mxfile>
+
