@@ -1,6 +1,7 @@
 package pl.pawel.sensecore.ingestionservice.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.http.ResponseEntity;
@@ -35,7 +36,7 @@ public class TelemetryIngestController {
 
     @PostMapping("/telemetry")
     public ResponseEntity<Void> ingest(
-            @RequestBody TelemetryIngestRequest body,
+            @Valid @RequestBody TelemetryIngestRequest body,
             HttpServletRequest request) {
         String requestId = resolveOrGenerate(request.getHeader(HEADER_REQUEST_ID));
         String traceId = resolveOrDefault(request.getHeader(HEADER_TRACE_ID), requestId);
