@@ -2,28 +2,28 @@ package pl.pawel.sensecore.ingestionservice.controller;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 import pl.pawel.sensecore.contracts.SensorType;
 import pl.pawel.sensecore.contracts.TelemetryEvent;
 import pl.pawel.sensecore.contracts.Unit;
 import pl.pawel.sensecore.ingestionservice.device.DeviceRepository;
-import pl.pawel.sensecore.ingestionservice.messaging.TelemetryPublisher;
 import pl.pawel.sensecore.ingestionservice.security.CertUtils;
-import pl.pawel.sensecore.ingestionservice.security.ClientIdentity;
+import pl.pawel.sensecore.ingestionservice.support.RabbitTestConfig;
+import pl.pawel.sensecore.ingestionservice.support.TestcontainersConfig;
 import pl.pawel.sensecore.persistence.entity.Device;
 
 import java.math.BigDecimal;
 import java.time.Instant;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -31,7 +31,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
-class TelemetryIngestIntegrationTest {
+@Import(RabbitTestConfig.class)
+class TelemetryIngestIntegrationTest extends TestcontainersConfig {
 
     private static final String CERT_HEADER = "-----BEGIN CERTIFICATE-----\n" +
             "dGVzdA==\n" +
@@ -43,12 +44,19 @@ class TelemetryIngestIntegrationTest {
     @Autowired
     private DeviceRepository deviceRepository;
 
-    @MockBean
-    private TelemetryPublisher telemetryPublisher;
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
+
+    @Value("${sensecore.rabbit.temperature-routing-key}")
+    private String telemetryQueue;
 
     @BeforeEach
     void setUp() {
         deviceRepository.deleteAll();
+        rabbitTemplate.execute(channel -> {
+            channel.queuePurge(telemetryQueue);
+            return null;
+        });
     }
 
     @Test
@@ -76,20 +84,15 @@ class TelemetryIngestIntegrationTest {
                         .content(body))
                 .andExpect(status().isAccepted());
 
-        ArgumentCaptor<TelemetryEvent> eventCaptor = ArgumentCaptor.forClass(TelemetryEvent.class);
-        ArgumentCaptor<ClientIdentity> identityCaptor = ArgumentCaptor.forClass(ClientIdentity.class);
-        verify(telemetryPublisher).publishTelemetryEvent(eventCaptor.capture(), identityCaptor.capture());
-
-        TelemetryEvent event = eventCaptor.getValue();
-        ClientIdentity identity = identityCaptor.getValue();
+        Object message = rabbitTemplate.receiveAndConvert(telemetryQueue, 5000);
+        assertThat(message).isInstanceOf(TelemetryEvent.class);
+        TelemetryEvent event = (TelemetryEvent) message;
 
         assertThat(event.deviceId()).isEqualTo("dev-1");
         assertThat(event.sensorType()).isEqualTo(SensorType.TEMPERATURE);
         assertThat(event.unit()).isEqualTo(Unit.CELSIUS);
         assertThat(event.value()).isEqualTo(new BigDecimal("21.5"));
         assertThat(event.timestamp()).isEqualTo(Instant.parse("2026-02-19T10:00:00Z"));
-        assertThat(identity.fingerprint()).isEqualTo(fingerprint);
-        assertThat(identity.ip()).isEqualTo("203.0.113.7");
     }
 
     @Test

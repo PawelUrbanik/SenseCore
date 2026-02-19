@@ -11,6 +11,7 @@ import pl.pawel.sensecore.persistence.entity.Device;
 import pl.pawel.sensecore.persistence.entity.TelemetryReading;
 import pl.pawel.sensecore.query.repository.DeviceRepository;
 import pl.pawel.sensecore.query.repository.TelemetryReadingRepository;
+import pl.pawel.sensecore.query.support.TestcontainersConfig;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -23,7 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
-class QueryApiIntegrationTest {
+class QueryApiIntegrationTest extends TestcontainersConfig {
 
     @Autowired
     private MockMvc mockMvc;
