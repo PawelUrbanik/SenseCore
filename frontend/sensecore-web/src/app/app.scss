@@ -1,0 +1,132 @@
+:host {
+  --bg: #f5f1e9;
+  --ink: #1b1b1b;
+  --muted: #5b5b5b;
+  --accent: #0e7a6f;
+  --card: #ffffff;
+  --border: #e5dfd6;
+  font-family: "Fraunces", "Iowan Old Style", "Garamond", "Times New Roman", serif;
+  color: var(--ink);
+}
+
+.page {
+  min-height: 100vh;
+  padding: 48px 20px 80px;
+  background: radial-gradient(circle at 20% 20%, #fff6e6 0%, transparent 55%),
+              radial-gradient(circle at 80% 10%, #e3f7f2 0%, transparent 45%),
+              var(--bg);
+}
+
+.hero {
+  display: flex;
+  gap: 24px;
+  justify-content: space-between;
+  align-items: flex-end;
+  max-width: 980px;
+  margin: 0 auto 32px;
+}
+
+.title h1 {
+  font-size: 40px;
+  letter-spacing: -0.5px;
+  margin: 6px 0 8px;
+}
+
+.title p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 12px;
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-end;
+}
+
+.btn {
+  background: var(--accent);
+  color: #ffffff;
+  border: 0;
+  padding: 10px 18px;
+  border-radius: 999px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.meta {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.card {
+  max-width: 980px;
+  margin: 0 auto 16px;
+  padding: 20px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.06);
+}
+
+.card h2 {
+  margin: 0 0 12px;
+}
+
+.card.error {
+  border-color: #f0b2a1;
+  background: #fff6f3;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
+  font-size: 14px;
+}
+
+.table th,
+.table td {
+  text-align: left;
+  padding: 10px 8px;
+  border-bottom: 1px solid var(--border);
+}
+
+.table th {
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+@media (max-width: 720px) {
+  .hero {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .actions {
+    align-items: flex-start;
+  }
+}
