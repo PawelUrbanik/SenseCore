@@ -1,0 +1,34 @@
+﻿.page {
+  display: grid;
+  gap: 16px;
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.reading {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+}
+
+.label {
+  text-transform: uppercase;
+  font-size: 12px;
+  letter-spacing: 1px;
+  color: var(--mat-sys-on-surface-variant);
+  margin: 0 0 4px;
+}
+
+.value {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.error {
+  border-left: 4px solid var(--mat-sys-error);
+}

@@ -1,0 +1,55 @@
+﻿<section class="page">
+  <nav class="breadcrumbs" aria-label="Breadcrumb">
+    <a class="link" routerLink="/devices">Devices</a>
+    <span aria-hidden="true">/</span>
+    <a class="link" [routerLink]="['/devices', deviceId()]">{{ deviceId() }}</a>
+    <span aria-hidden="true">/</span>
+    <span>{{ sensorType() }}</span>
+  </nav>
+
+  <header class="page-header">
+    <div>
+      <p class="eyebrow">Latest reading</p>
+      <h1>{{ sensorType() }} sensor</h1>
+      <p class="muted">Latest measurement for {{ deviceId() }}.</p>
+    </div>
+    <div class="actions">
+      <button mat-flat-button color="primary" type="button" (click)="loadLatest()" [disabled]="loading()">
+        Refresh
+      </button>
+      <a mat-stroked-button color="primary" [routerLink]="['/devices', deviceId(), 'sensors', sensorType(), 'history']">
+        History
+      </a>
+    </div>
+  </header>
+
+  @if (error()) {
+    <mat-card class="error" role="alert">
+      <mat-card-content>
+        <strong>Error</strong>
+        <span>{{ error() }}</span>
+      </mat-card-content>
+    </mat-card>
+  }
+
+  <mat-card>
+    <mat-card-content aria-live="polite">
+      @if (loading()) {
+        <p class="muted">Loading latest reading...</p>
+      } @else if (!latest()) {
+        <p class="muted">No reading found for this sensor.</p>
+      } @else {
+        <div class="reading">
+          <div>
+            <p class="label">Value</p>
+            <p class="value">{{ latest()!.value }} {{ latest()!.unit }}</p>
+          </div>
+          <div>
+            <p class="label">Timestamp</p>
+            <p class="value">{{ formattedTimestamp() }}</p>
+          </div>
+        </div>
+      }
+    </mat-card-content>
+  </mat-card>
+</section>

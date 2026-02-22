@@ -1,52 +1,13 @@
-<main class="page">
-  <header class="hero">
-    <div class="title">
-      <span class="eyebrow">SenseCore</span>
-      <h1>{{ title() }}</h1>
-      <p>Dev panel. Pobieranie listy urzadzen z `GET /devices` przez proxy.</p>
-    </div>
-    <div class="actions">
-      <button class="btn" type="button" (click)="loadDevices()" [disabled]="loading()">
-        {{ loading() ? 'Loading...' : 'Load devices' }}
-      </button>
-      @if (lastLoadedAt()) {
-        <span class="meta">Last loaded: {{ lastLoadedAt() }}</span>
-      }
-    </div>
-  </header>
+﻿<a class="skip-link" href="#main">Skip to content</a>
 
-  @if (error()) {
-    <section class="card error">
-      <strong>Error</strong>
-      <span>{{ error() }}</span>
-    </section>
-  }
+<div class="app">
+  <mat-toolbar color="primary" class="app-toolbar">
+    <span class="brand">Sensor Console</span>
+    <span class="spacer"></span>
+    <a mat-button routerLink="/devices" routerLinkActive="active">Devices</a>
+  </mat-toolbar>
 
-  <section class="card">
-    <h2>Devices</h2>
-    @if (!devices()) {
-      <p class="muted">Brak danych. Kliknij "Load devices".</p>
-    } @else if (devices()!.length === 0) {
-      <p class="muted">Brak urzadzen w bazie.</p>
-    } @else {
-      <table class="table">
-        <thead>
-          <tr>
-            <th>Device ID</th>
-            <th>Status</th>
-            <th>Created</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (device of devices()!; track device.deviceId) {
-            <tr>
-              <td>{{ device.deviceId }}</td>
-              <td>{{ device.status }}</td>
-              <td>{{ device.createdAt }}</td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    }
-  </section>
-</main>
+  <main id="main" class="app-main">
+    <router-outlet></router-outlet>
+  </main>
+</div>

@@ -1,0 +1,72 @@
+﻿<section class="page">
+  <nav class="breadcrumbs" aria-label="Breadcrumb">
+    <a class="link" routerLink="/devices">Devices</a>
+    <span aria-hidden="true">/</span>
+    <span>{{ deviceId() }}</span>
+  </nav>
+
+  <header class="page-header">
+    <div>
+      <p class="eyebrow">Device</p>
+      <h1>Device {{ deviceId() }}</h1>
+      <p class="muted">Choose a sensor to view latest readings or history.</p>
+    </div>
+  </header>
+
+  @if (error()) {
+    <mat-card class="error" role="alert">
+      <mat-card-content>
+        <strong>Error</strong>
+        <span>{{ error() }}</span>
+      </mat-card-content>
+    </mat-card>
+  }
+
+  <mat-card>
+    <mat-card-content aria-live="polite">
+      @if (loading()) {
+        <p class="muted">Loading device...</p>
+      } @else if (!device()) {
+        <p class="muted">Device not found. It may have been removed.</p>
+      } @else {
+        <dl class="detail-grid">
+          <div>
+            <dt>Status</dt>
+            <dd>{{ device()!.status }}</dd>
+          </div>
+          <div>
+            <dt>Created</dt>
+            <dd>{{ device()!.createdAt }}</dd>
+          </div>
+        </dl>
+      }
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card>
+    <mat-card-title>Open sensor</mat-card-title>
+    <mat-card-content>
+      <form class="sensor-form" aria-label="Open sensor form">
+        <mat-form-field appearance="outline">
+          <mat-label>Sensor type</mat-label>
+          <mat-select [formControl]="sensorTypeControl" required>
+            @for (sensor of sensorOptions; track sensor.type) {
+              <mat-option [value]="sensor.type" [disabled]="!sensor.active">
+                {{ sensor.label }}
+              </mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+        <button
+          mat-flat-button
+          color="primary"
+          type="button"
+          [disabled]="!canNavigate()"
+          (click)="openSensor()"
+        >
+          Open
+        </button>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</section>

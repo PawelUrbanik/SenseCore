@@ -1,0 +1,61 @@
+﻿<section class="page">
+  <header class="page-header">
+    <div>
+      <p class="eyebrow">Devices</p>
+      <h1>Devices</h1>
+      <p class="muted">Browse registered devices and open details.</p>
+    </div>
+    <div class="actions">
+      <button mat-flat-button color="primary" type="button" (click)="loadDevices()" [disabled]="loading()">
+        Refresh
+      </button>
+      <span class="meta">Updated: {{ lastUpdatedLabel() }}</span>
+    </div>
+  </header>
+
+  @if (error()) {
+    <mat-card class="error" role="alert">
+      <mat-card-content>
+        <strong>Error</strong>
+        <span>{{ error() }}</span>
+      </mat-card-content>
+    </mat-card>
+  }
+
+  <mat-card>
+    <mat-card-content aria-live="polite">
+      @if (loading()) {
+        <div class="loading">
+          <mat-progress-spinner diameter="28" mode="indeterminate"></mat-progress-spinner>
+          <span class="muted">Loading devices...</span>
+        </div>
+      } @else if (devices() === null) {
+        <p class="muted">No data loaded yet.</p>
+      } @else if (!hasDevices()) {
+        <p class="muted">No devices found.</p>
+      } @else {
+        <table mat-table [dataSource]="devices() ?? []" class="table">
+          <ng-container matColumnDef="deviceId">
+            <th mat-header-cell *matHeaderCellDef>Device ID</th>
+            <td mat-cell *matCellDef="let device">
+              <a class="link" [routerLink]="['/devices', device.deviceId]">{{ device.deviceId }}</a>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef>Status</th>
+            <td mat-cell *matCellDef="let device">{{ device.status }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="createdAt">
+            <th mat-header-cell *matHeaderCellDef>Created</th>
+            <td mat-cell *matCellDef="let device">{{ device.createdAt }}</td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+        </table>
+      }
+    </mat-card-content>
+  </mat-card>
+</section>

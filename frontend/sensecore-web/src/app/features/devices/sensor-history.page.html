@@ -1,0 +1,153 @@
+﻿<section class="page">
+  <nav class="breadcrumbs" aria-label="Breadcrumb">
+    <a class="link" routerLink="/devices">Devices</a>
+    <span aria-hidden="true">/</span>
+    <a class="link" [routerLink]="['/devices', deviceId()]">{{ deviceId() }}</a>
+    <span aria-hidden="true">/</span>
+    <a class="link" [routerLink]="['/devices', deviceId(), 'sensors', sensorType()]">{{ sensorType() }}</a>
+    <span aria-hidden="true">/</span>
+    <span>History</span>
+  </nav>
+
+  <header class="page-header">
+    <div>
+      <p class="eyebrow">History</p>
+      <h1>{{ sensorType() }} history</h1>
+      <p class="muted">Time series for {{ deviceId() }}.</p>
+    </div>
+    <div class="actions">
+      <button mat-flat-button color="primary" type="button" (click)="loadHistory()" [disabled]="loading()">
+        Refresh
+      </button>
+      <button
+        mat-stroked-button
+        color="primary"
+        type="button"
+        (click)="toggleAutoRefresh()"
+        [disabled]="loading()"
+      >
+        {{ autoRefreshEnabled() ? 'Stop auto-refresh' : 'Auto-refresh' }}
+      </button>
+    </div>
+  </header>
+
+  <mat-card>
+    <mat-card-title>Filters</mat-card-title>
+    <mat-card-content>
+      <form class="filters" [formGroup]="form">
+        <mat-form-field appearance="outline">
+          <mat-label>From date</mat-label>
+          <input matInput [matDatepicker]="fromPicker" [formControl]="form.controls.fromDate" required />
+          <mat-datepicker-toggle matIconSuffix [for]="fromPicker"></mat-datepicker-toggle>
+          <mat-datepicker #fromPicker></mat-datepicker>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>From time</mat-label>
+          <input
+            matInput
+            type="time"
+            [formControl]="form.controls.fromTime"
+            required
+            [attr.aria-invalid]="form.controls.fromTime.invalid && form.controls.fromTime.touched"
+          />
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>To date</mat-label>
+          <input matInput [matDatepicker]="toPicker" [formControl]="form.controls.toDate" required />
+          <mat-datepicker-toggle matIconSuffix [for]="toPicker"></mat-datepicker-toggle>
+          <mat-datepicker #toPicker></mat-datepicker>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>To time</mat-label>
+          <input
+            matInput
+            type="time"
+            [formControl]="form.controls.toTime"
+            required
+            [attr.aria-invalid]="form.controls.toTime.invalid && form.controls.toTime.touched"
+          />
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Limit</mat-label>
+          <input
+            matInput
+            id="limit"
+            type="number"
+            min="1"
+            max="2000"
+            [formControl]="form.controls.limit"
+            [attr.aria-invalid]="form.controls.limit.invalid && form.controls.limit.touched"
+          />
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Auto-refresh (seconds)</mat-label>
+          <input
+            matInput
+            type="number"
+            min="5"
+            max="3600"
+            [formControl]="form.controls.refreshSeconds"
+            [attr.aria-invalid]="form.controls.refreshSeconds.invalid && form.controls.refreshSeconds.touched"
+          />
+          <mat-hint>Min 5s, max 3600s</mat-hint>
+        </mat-form-field>
+        <button mat-flat-button color="primary" type="button" (click)="loadHistory()" [disabled]="loading()">
+          Apply
+        </button>
+      </form>
+    </mat-card-content>
+  </mat-card>
+
+  @if (error()) {
+    <mat-card class="error" role="alert">
+      <mat-card-content>
+        <strong>Error</strong>
+        <span>{{ error() }}</span>
+      </mat-card-content>
+    </mat-card>
+  }
+
+  <mat-card>
+    <mat-card-content aria-live="polite">
+      @if (loading()) {
+        <div class="loading">
+          <mat-progress-spinner diameter="28" mode="indeterminate"></mat-progress-spinner>
+          <span class="muted">Loading history...</span>
+        </div>
+      } @else if (!hasReadings()) {
+        <p class="muted">No readings for this range.</p>
+      } @else {
+        <div class="chart" echarts [options]="chartOptions()" role="img" aria-label="Sensor history chart"></div>
+      }
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card>
+    <mat-card-title>Readings</mat-card-title>
+    <mat-card-content>
+      @if (!hasReadings()) {
+        <p class="muted">No data to display.</p>
+      } @else {
+        <table mat-table [dataSource]="readings()" class="table">
+          <ng-container matColumnDef="timestamp">
+            <th mat-header-cell *matHeaderCellDef>Timestamp</th>
+            <td mat-cell *matCellDef="let reading">{{ formatRowTimestamp(reading.timestamp) }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="value">
+            <th mat-header-cell *matHeaderCellDef>Value</th>
+            <td mat-cell *matCellDef="let reading">{{ reading.value }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="unit">
+            <th mat-header-cell *matHeaderCellDef>Unit</th>
+            <td mat-cell *matCellDef="let reading">{{ reading.unit }}</td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="historyColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: historyColumns"></tr>
+        </table>
+      }
+    </mat-card-content>
+  </mat-card>
+</section>

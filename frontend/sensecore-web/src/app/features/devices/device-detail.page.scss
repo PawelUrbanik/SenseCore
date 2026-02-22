@@ -1,0 +1,33 @@
+﻿.page {
+  display: grid;
+  gap: 16px;
+}
+
+.sensor-form {
+  display: grid;
+  gap: 12px;
+  max-width: 360px;
+}
+
+.detail-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 16px;
+  margin: 0;
+}
+
+.detail-grid dt {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.detail-grid dd {
+  margin: 4px 0 0;
+  font-weight: 600;
+}
+
+.error {
+  border-left: 4px solid var(--mat-sys-error);
+}
