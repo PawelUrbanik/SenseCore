@@ -3,7 +3,10 @@ import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
 
 import { QueryApiService } from '../../api/query-api.service';
@@ -15,7 +18,15 @@ import { formatTimestamp } from '../../shared/time';
   templateUrl: './devices.page.html',
   styleUrl: './devices.page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [MatButtonModule, MatCardModule, MatProgressSpinnerModule, MatTableModule]
+  imports: [
+    MatButtonModule,
+    MatCardModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatProgressSpinnerModule,
+    MatSelectModule,
+    MatTableModule
+  ]
 })
 export class DevicesPage {
   private readonly api = inject(QueryApiService);
@@ -27,8 +38,25 @@ export class DevicesPage {
   readonly loading = signal(false);
   readonly error = signal<string | null>(null);
   readonly lastUpdated = signal<string | null>(null);
+  readonly nameFilter = signal('');
+  readonly statusFilter = signal('');
 
   readonly hasDevices = computed(() => (this.devices() ?? []).length > 0);
+  readonly availableStatuses = computed(() => {
+    const statuses = new Set((this.devices() ?? []).map(device => device.status));
+    return [...statuses].sort((a, b) => a.localeCompare(b));
+  });
+  readonly filteredDevices = computed(() => {
+    const normalizedName = this.nameFilter().trim().toLowerCase();
+    const selectedStatus = this.statusFilter().trim();
+
+    return (this.devices() ?? []).filter(device => {
+      const matchesName = !normalizedName || device.deviceId.toLowerCase().includes(normalizedName);
+      const matchesStatus = !selectedStatus || device.status === selectedStatus;
+      return matchesName && matchesStatus;
+    });
+  });
+  readonly hasFilteredDevices = computed(() => this.filteredDevices().length > 0);
   readonly lastUpdatedLabel = computed(() => formatTimestamp(this.lastUpdated()));
   readonly displayedColumns = ['deviceId', 'status', 'createdAt'];
 
@@ -58,5 +86,13 @@ export class DevicesPage {
 
   openDeviceDetails(deviceId: string): void {
     void this.router.navigate(['/devices', deviceId]);
+  }
+
+  setNameFilter(value: string): void {
+    this.nameFilter.set(value);
+  }
+
+  setStatusFilter(value: string): void {
+    this.statusFilter.set(value);
   }
 }

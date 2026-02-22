@@ -28,6 +28,13 @@
   border-left: 4px solid var(--mat-sys-error);
 }
 
+.filters {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(2, minmax(180px, 280px));
+  margin-bottom: 12px;
+}
+
 .table .device-row {
   cursor: pointer;
   transition: background-color 120ms ease-in-out;
@@ -61,6 +68,10 @@
 }
 
 @media (max-width: 720px) {
+  .filters {
+    grid-template-columns: 1fr;
+  }
+
   .actions {
     align-items: flex-start;
   }
