@@ -17,9 +17,11 @@
       <button mat-flat-button color="primary" type="button" (click)="loadLatest()" [disabled]="loading()">
         Refresh
       </button>
-      <a mat-stroked-button color="primary" [routerLink]="['/devices', deviceId(), 'sensors', sensorType(), 'history']">
-        History
-      </a>
+      @if (this.latest() != null) {
+        <a mat-stroked-button color="primary" [routerLink]="['/devices', deviceId(), 'sensors', sensorType(), 'history']">
+          History
+        </a>
+      }
     </div>
   </header>
 

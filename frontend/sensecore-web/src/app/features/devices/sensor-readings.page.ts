@@ -1,10 +1,11 @@
-﻿import { ChangeDetectionStrategy, Component, computed, DestroyRef, effect, inject, signal } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
+import { ChangeDetectionStrategy, Component, computed, DestroyRef, effect, inject, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { map } from 'rxjs/operators';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { Subscription } from 'rxjs';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
+import { Subscription } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 import { QueryApiService } from '../../api/query-api.service';
 import { TelemetryReadingDto } from '../../api/query-api.models';
@@ -64,6 +65,13 @@ export class SensorReadingsPage {
         this.loading.set(false);
       },
       error: err => {
+        if (err instanceof HttpErrorResponse && err.status === 404) {
+          this.latest.set(null);
+          this.error.set(null);
+          this.loading.set(false);
+          return;
+        }
+
         const message = err?.error?.message || err?.message || 'Request failed';
         this.error.set(message);
         this.loading.set(false);
