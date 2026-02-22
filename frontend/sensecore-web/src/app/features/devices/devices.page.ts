@@ -1,5 +1,5 @@
 ﻿import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject, signal } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -15,10 +15,11 @@ import { formatTimestamp } from '../../shared/time';
   templateUrl: './devices.page.html',
   styleUrl: './devices.page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, MatButtonModule, MatCardModule, MatProgressSpinnerModule, MatTableModule]
+  imports: [MatButtonModule, MatCardModule, MatProgressSpinnerModule, MatTableModule]
 })
 export class DevicesPage {
   private readonly api = inject(QueryApiService);
+  private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
   private devicesSub: Subscription | null = null;
 
@@ -53,5 +54,9 @@ export class DevicesPage {
         this.loading.set(false);
       }
     });
+  }
+
+  openDeviceDetails(deviceId: string): void {
+    void this.router.navigate(['/devices', deviceId]);
   }
 }

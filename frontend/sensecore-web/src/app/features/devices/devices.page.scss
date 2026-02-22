@@ -28,6 +28,38 @@
   border-left: 4px solid var(--mat-sys-error);
 }
 
+.table .device-row {
+  cursor: pointer;
+  transition: background-color 120ms ease-in-out;
+}
+
+.table .device-row:hover .mat-mdc-cell,
+.table .device-row:hover .mat-cell,
+.table .device-row:hover .mdc-data-table__cell {
+  background-color: rgba(25, 118, 210, 0.12) !important;
+}
+
+.table .device-row:focus-visible .mat-mdc-cell,
+.table .device-row:focus-visible .mat-cell,
+.table .device-row:focus-visible .mdc-data-table__cell {
+  background-color: rgba(25, 118, 210, 0.16) !important;
+}
+
+.table .device-row:focus-visible {
+  outline: 2px solid var(--mat-sys-primary);
+  outline-offset: -2px;
+}
+
+:host ::ng-deep .table .device-row:hover > .mdc-data-table__cell,
+:host ::ng-deep .table .device-row:hover > .mat-mdc-cell {
+  background-color: rgba(25, 118, 210, 0.12) !important;
+}
+
+:host ::ng-deep .table .device-row:focus-visible > .mdc-data-table__cell,
+:host ::ng-deep .table .device-row:focus-visible > .mat-mdc-cell {
+  background-color: rgba(25, 118, 210, 0.16) !important;
+}
+
 @media (max-width: 720px) {
   .actions {
     align-items: flex-start;
