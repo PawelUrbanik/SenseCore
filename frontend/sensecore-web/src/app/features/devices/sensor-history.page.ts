@@ -1,17 +1,10 @@
-﻿import { ChangeDetectionStrategy, Component, computed, DestroyRef, effect, inject, signal } from '@angular/core';
-import { ActivatedRoute, RouterLink } from '@angular/router';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { map } from 'rxjs/operators';
+import { HttpErrorResponse } from '@angular/common/http';
+import { ChangeDetectionStrategy, Component, computed, DestroyRef, effect, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { Subscription } from 'rxjs';
-import { NgxEchartsDirective } from 'ngx-echarts';
-import { EChartsCoreOption } from 'echarts/core';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatTableModule } from '@angular/material/table';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import {
   DateAdapter,
@@ -20,7 +13,15 @@ import {
   MatDateFormats,
   MatNativeDateModule
 } from '@angular/material/core';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatTableModule } from '@angular/material/table';
+import { EChartsCoreOption } from 'echarts/core';
+import { NgxEchartsDirective } from 'ngx-echarts';
+import { Subscription } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 import { QueryApiService } from '../../api/query-api.service';
 import { TelemetryReadingDto } from '../../api/query-api.models';
@@ -82,6 +83,7 @@ export class SensorHistoryPage {
 
   readonly readings = signal<TelemetryReadingDto[]>([]);
   readonly loading = signal(false);
+  readonly refreshing = signal(false);
   readonly error = signal<string | null>(null);
   readonly autoRefreshEnabled = signal(false);
 
@@ -173,8 +175,8 @@ export class SensorHistoryPage {
     const intervalSeconds = this.form.controls.refreshSeconds.value;
 
     this.refreshTimer = setInterval(() => {
-      if (!this.loading()) {
-        this.loadHistory();
+      if (!this.loading() && !this.refreshing()) {
+        this.loadHistory({ silent: true });
       }
     }, intervalSeconds * 1000);
   }
@@ -186,7 +188,7 @@ export class SensorHistoryPage {
     }
   }
 
-  loadHistory(): void {
+  loadHistory(options?: { silent?: boolean }): void {
     if (!this.deviceId() || !this.sensorType()) {
       return;
     }
@@ -204,8 +206,11 @@ export class SensorHistoryPage {
       return;
     }
 
+    const silent = !!options?.silent && this.hasReadings();
+
     this.historySub?.unsubscribe();
-    this.loading.set(true);
+    this.loading.set(!silent);
+    this.refreshing.set(silent);
     this.error.set(null);
 
     this.historySub = this.api.getHistory(
@@ -218,11 +223,21 @@ export class SensorHistoryPage {
       next: readings => {
         this.readings.set(readings);
         this.loading.set(false);
+        this.refreshing.set(false);
       },
       error: err => {
+        if (err instanceof HttpErrorResponse && err.status === 404) {
+          this.readings.set([]);
+          this.error.set(null);
+          this.loading.set(false);
+          this.refreshing.set(false);
+          return;
+        }
+
         const message = err?.error?.message || err?.message || 'Request failed';
         this.error.set(message);
         this.loading.set(false);
+        this.refreshing.set(false);
       }
     });
   }

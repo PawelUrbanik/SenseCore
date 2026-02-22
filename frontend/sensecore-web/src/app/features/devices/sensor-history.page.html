@@ -28,6 +28,9 @@
       >
         {{ autoRefreshEnabled() ? 'Stop auto-refresh' : 'Auto-refresh' }}
       </button>
+      @if (refreshing()) {
+        <span class="muted">Refreshing data...</span>
+      }
     </div>
   </header>
 
@@ -109,7 +112,7 @@
 
   <mat-card>
     <mat-card-content aria-live="polite">
-      @if (loading()) {
+      @if (loading() && !hasReadings()) {
         <div class="loading">
           <mat-progress-spinner diameter="28" mode="indeterminate"></mat-progress-spinner>
           <span class="muted">Loading history...</span>
