@@ -15,26 +15,49 @@
       <h1>{{ sensorType() }} history</h1>
       <p class="muted">Time series for {{ deviceId() }}.</p>
     </div>
-    <div class="actions">
-      <button mat-flat-button color="primary" type="button" (click)="loadHistory()" [disabled]="loading()">
-        Refresh
-      </button>
-      <button
-        mat-stroked-button
-        color="primary"
-        type="button"
-        (click)="toggleAutoRefresh()"
-        [disabled]="loading()"
-      >
-        {{ autoRefreshEnabled() ? 'Stop auto-refresh' : 'Auto-refresh' }}
-      </button>
-      @if (refreshing()) {
-        <span class="muted">Refreshing data...</span>
-      }
-    </div>
   </header>
 
-  <mat-card>
+  <mat-card class="refresh-card">
+    <mat-card-title>Refresh controls</mat-card-title>
+    <mat-card-content>
+      <div class="refresh-controls">
+        <mat-form-field appearance="outline">
+          <mat-label>Auto-refresh (seconds)</mat-label>
+          <input
+            matInput
+            type="number"
+            min="5"
+            max="3600"
+            [formControl]="form.controls.refreshSeconds"
+            [attr.aria-invalid]="form.controls.refreshSeconds.invalid && form.controls.refreshSeconds.touched"
+          />
+          <mat-hint>Min 5s, max 3600s</mat-hint>
+        </mat-form-field>
+        <div class="actions">
+          <button
+            mat-stroked-button
+            color="primary"
+            type="button"
+            class="auto-refresh-toggle"
+            [class.auto-refresh-on]="autoRefreshEnabled()"
+            [class.auto-refresh-off]="!autoRefreshEnabled()"
+            (click)="toggleAutoRefresh()"
+            [disabled]="loading()"
+          >
+            {{ autoRefreshEnabled() ? 'Auto-refresh: ON' : 'Auto-refresh: OFF' }}
+          </button>
+          <button mat-flat-button color="primary" type="button" (click)="loadHistory()" [disabled]="loading()">
+            Refresh now
+          </button>
+        </div>
+        @if (refreshing()) {
+          <span class="muted">Refreshing data...</span>
+        }
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="filters-card">
     <mat-card-title>Filters</mat-card-title>
     <mat-card-content>
       <form class="filters" [formGroup]="form">
@@ -82,21 +105,18 @@
             [attr.aria-invalid]="form.controls.limit.invalid && form.controls.limit.touched"
           />
         </mat-form-field>
-        <mat-form-field appearance="outline">
-          <mat-label>Auto-refresh (seconds)</mat-label>
-          <input
-            matInput
-            type="number"
-            min="5"
-            max="3600"
-            [formControl]="form.controls.refreshSeconds"
-            [attr.aria-invalid]="form.controls.refreshSeconds.invalid && form.controls.refreshSeconds.touched"
-          />
-          <mat-hint>Min 5s, max 3600s</mat-hint>
-        </mat-form-field>
-        <button mat-flat-button color="primary" type="button" (click)="loadHistory()" [disabled]="loading()">
-          Apply
-        </button>
+        <div class="filters-actions">
+          <button
+            mat-flat-button
+            color="primary"
+            type="button"
+            class="apply-button"
+            (click)="loadHistory()"
+            [disabled]="loading()"
+          >
+            Apply
+          </button>
+        </div>
       </form>
     </mat-card-content>
   </mat-card>
@@ -110,7 +130,7 @@
     </mat-card>
   }
 
-  <mat-card>
+  <mat-card class="chart-card">
     <mat-card-content aria-live="polite">
       @if (loading() && !hasReadings()) {
         <div class="loading">
@@ -125,7 +145,7 @@
     </mat-card-content>
   </mat-card>
 
-  <mat-card>
+  <mat-card class="readings-card">
     <mat-card-title>Readings</mat-card-title>
     <mat-card-content>
       @if (!hasReadings()) {

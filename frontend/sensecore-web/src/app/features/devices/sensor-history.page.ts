@@ -158,8 +158,12 @@ export class SensorHistoryPage {
 
     if (enabled) {
       this.startAutoRefresh();
+      if (this.autoRefreshEnabled()) {
+        this.form.controls.refreshSeconds.disable({ emitEvent: false });
+      }
     } else {
       this.stopAutoRefresh();
+      this.form.controls.refreshSeconds.enable({ emitEvent: false });
     }
   }
 
@@ -169,6 +173,7 @@ export class SensorHistoryPage {
     if (this.form.controls.refreshSeconds.invalid) {
       this.form.controls.refreshSeconds.markAsTouched();
       this.autoRefreshEnabled.set(false);
+      this.form.controls.refreshSeconds.enable({ emitEvent: false });
       return;
     }
 
