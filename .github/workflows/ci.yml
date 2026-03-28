@@ -119,14 +119,14 @@ jobs:
 
     steps:
       - name: Download backend unit test reports
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v6
         with:
           name: backend-unit-test-reports
           path: unit-test-reports/backend
           if-no-files-found: warn
 
       - name: Download frontend unit test report
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v6
         with:
           name: frontend-unit-test-report
           path: unit-test-reports/frontend
@@ -166,15 +166,15 @@ jobs:
 
           def write_table(f, title, files, totals):
               passed = max(0, totals['tests'] - totals['failures'] - totals['errors'] - totals['skipped'])
-              f.write(f"### {title}\\n\\n")
-              f.write(f"Parsed report files: {files}\\n\\n")
-              f.write("| Metric | Value |\\n")
-              f.write("|---|---:|\\n")
-              f.write(f"| Total | {totals['tests']} |\\n")
-              f.write(f"| Passed | {passed} |\\n")
-              f.write(f"| Failed | {totals['failures']} |\\n")
-              f.write(f"| Errors | {totals['errors']} |\\n")
-              f.write(f"| Skipped | {totals['skipped']} |\\n\\n")
+              f.write(f"### {title}\n\n")
+              f.write(f"Parsed report files: {files}\n\n")
+              f.write("| Metric | Value |\n")
+              f.write("|---|---:|\n")
+              f.write(f"| Total | {totals['tests']} |\n")
+              f.write(f"| Passed | {passed} |\n")
+              f.write(f"| Failed | {totals['failures']} |\n")
+              f.write(f"| Errors | {totals['errors']} |\n")
+              f.write(f"| Skipped | {totals['skipped']} |\n\n")
 
           backend_files, backend = collect(['unit-test-reports/backend/**/*.xml'])
           frontend_files, frontend = collect(['unit-test-reports/frontend/**/*.xml'])
@@ -182,7 +182,7 @@ jobs:
           summary = os.environ.get('GITHUB_STEP_SUMMARY')
           if summary:
               with open(summary, 'a', encoding='utf-8') as f:
-                  f.write("## Unit Tests\\n\\n")
+                  f.write("## Unit Tests\n\n")
                   write_table(f, 'Backend Unit Tests', backend_files, backend)
                   write_table(f, 'Frontend Unit Tests', frontend_files, frontend)
           PY
@@ -362,6 +362,7 @@ jobs:
           -Dsurefire.failIfNoSpecifiedTests=false
           -Dtest='*IntegrationTest,*ApplicationTests'
           test
+
 
 
 
