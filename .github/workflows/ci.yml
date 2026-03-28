@@ -148,6 +148,9 @@ jobs:
           name: backend-build-artifacts
           path: backend-build-artifacts
 
+      - name: Install parent POM descriptor
+        run: mvn -B -ntp -N install
+
       - name: Install shared backend dependencies
         shell: bash
         run: |
@@ -259,6 +262,9 @@ jobs:
         with:
           name: backend-build-artifacts
           path: backend-build-artifacts
+
+      - name: Install parent POM descriptor
+        run: mvn -B -ntp -N install
 
       - name: Install shared backend dependencies
         shell: bash
