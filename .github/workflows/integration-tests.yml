@@ -1,0 +1,33 @@
+name: Backend Integration Tests
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  backend_integration_test:
+    name: Backend Integration Test (Maven)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Set up Java 17
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: maven
+
+      - name: Run backend integration tests
+        run: >-
+          mvn -B -ntp
+          -Dsurefire.failIfNoSpecifiedTests=false
+          -Dtest='*IntegrationTest,*ApplicationTests'
+          test
