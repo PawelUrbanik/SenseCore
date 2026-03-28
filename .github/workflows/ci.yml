@@ -44,6 +44,59 @@ jobs:
           -Dtest='*Test,!*IntegrationTest,!*ApplicationTests'
           test
 
+      - name: Upload backend unit test reports
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: backend-unit-test-reports
+          path: services/**/target/surefire-reports/*.xml
+          if-no-files-found: warn
+
+      - name: Summarize backend unit tests
+        if: always()
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import glob
+          import os
+          import xml.etree.ElementTree as ET
+
+          files = glob.glob('services/**/target/surefire-reports/*.xml', recursive=True)
+          totals = {'tests': 0, 'failures': 0, 'errors': 0, 'skipped': 0}
+
+          for fp in files:
+              try:
+                  root = ET.parse(fp).getroot()
+              except Exception:
+                  continue
+
+              suites = []
+              if root.tag == 'testsuite':
+                  suites = [root]
+              elif root.tag == 'testsuites':
+                  suites = root.findall('testsuite')
+
+              for s in suites:
+                  totals['tests'] += int(s.attrib.get('tests', 0) or 0)
+                  totals['failures'] += int(s.attrib.get('failures', 0) or 0)
+                  totals['errors'] += int(s.attrib.get('errors', 0) or 0)
+                  totals['skipped'] += int(s.attrib.get('skipped', 0) or 0)
+
+          passed = max(0, totals['tests'] - totals['failures'] - totals['errors'] - totals['skipped'])
+          summary = os.environ.get('GITHUB_STEP_SUMMARY')
+          if summary:
+              with open(summary, 'a', encoding='utf-8') as f:
+                  f.write('### Backend Unit Tests\n\n')
+                  f.write(f'Parsed report files: {len(files)}\n\n')
+                  f.write('| Metric | Value |\n')
+                  f.write('|---|---:|\n')
+                  f.write(f"| Total | {totals['tests']} |\n")
+                  f.write(f"| Passed | {passed} |\n")
+                  f.write(f"| Failed | {totals['failures']} |\n")
+                  f.write(f"| Errors | {totals['errors']} |\n")
+                  f.write(f"| Skipped | {totals['skipped']} |\n")
+          PY
+
   backend_build:
     name: Backend Build (Maven)
     runs-on: ubuntu-latest
@@ -191,6 +244,42 @@ jobs:
         shell: bash
         run: |
           npm audit --audit-level=high --json > npm-audit.json || true
+
+      - name: Summarize npm audit
+        if: always()
+        shell: bash
+        run: |
+          node - <<'NODE'
+          const fs = require('fs');
+          const summary = process.env.GITHUB_STEP_SUMMARY;
+
+          let vulnerabilities = { critical: 0, high: 0, moderate: 0, low: 0 };
+          try {
+            const raw = fs.readFileSync('npm-audit.json', 'utf8');
+            const data = JSON.parse(raw);
+            const meta = (data.metadata && data.metadata.vulnerabilities) || {};
+            vulnerabilities = {
+              critical: meta.critical || 0,
+              high: meta.high || 0,
+              moderate: meta.moderate || 0,
+              low: meta.low || 0
+            };
+          } catch (_) {
+            // Keep default zero values when report is missing or invalid.
+          }
+
+          if (summary) {
+            fs.appendFileSync(summary,
+              '### Frontend npm audit\n\n' +
+              '| Level | Count |\n' +
+              '|---|---:|\n' +
+              `| Critical | ${vulnerabilities.critical} |\n` +
+              `| High | ${vulnerabilities.high} |\n` +
+              `| Moderate | ${vulnerabilities.moderate} |\n` +
+              `| Low | ${vulnerabilities.low} |\n`
+            );
+          }
+          NODE
 
       - name: Upload frontend analysis reports
         if: always()
