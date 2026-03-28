@@ -50,7 +50,6 @@ jobs:
         with:
           name: backend-unit-test-reports
           path: services/**/target/surefire-reports/*.xml
-          if-no-files-found: warn
 
 
   backend_build:
@@ -106,7 +105,6 @@ jobs:
         with:
           name: frontend-unit-test-report
           path: frontend/sensecore-web/test-results/frontend-junit.xml
-          if-no-files-found: warn
 
 
   unit_test_summary:
@@ -123,14 +121,12 @@ jobs:
         with:
           name: backend-unit-test-reports
           path: unit-test-reports/backend
-          if-no-files-found: warn
 
       - name: Download frontend unit test report
         uses: actions/download-artifact@v6
         with:
           name: frontend-unit-test-report
           path: unit-test-reports/frontend
-          if-no-files-found: warn
 
       - name: Summarize unit tests (backend + frontend)
         shell: bash
@@ -258,7 +254,6 @@ jobs:
           path: |
             services/**/target/checkstyle-result.xml
             services/**/target/spotbugsXml.xml
-          if-no-files-found: warn
 
   frontend_analysis:
     name: Frontend Analysis (TypeCheck + npm audit)
@@ -333,7 +328,6 @@ jobs:
         with:
           name: frontend-analysis-reports
           path: frontend/sensecore-web/npm-audit.json
-          if-no-files-found: warn
 
   backend_integration_test:
     if: ${{ github.event_name == 'workflow_dispatch' && inputs.run_backend_integration }}
