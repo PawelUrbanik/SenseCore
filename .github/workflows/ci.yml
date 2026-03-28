@@ -225,10 +225,10 @@ jobs:
 
       - name: Type check
         run: npx tsc -p tsconfig.app.json --noEmit
-
       - name: npm audit (high+)
-        run: npm audit --audit-level=high --json > npm-audit.json
-        continue-on-error: true
+        shell: bash
+        run: |
+          npm audit --audit-level=high --json > npm-audit.json || true
 
       - name: Upload frontend analysis reports
         if: always()
@@ -300,4 +300,5 @@ jobs:
           -Dsurefire.failIfNoSpecifiedTests=false
           -Dtest='*IntegrationTest,*ApplicationTests'
           test
+
 
