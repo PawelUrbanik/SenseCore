@@ -67,7 +67,7 @@ public class TelemetryProcessorServiceImpl implements TelemetryProcessorService 
             throw new AmqpRejectAndDontRequeueException("timestamp missing");
 
         if (!event.sensorType().isUnitCompatible(event.unit())) {
-            throw new AmqpRejectAndDontRequeueException("timestamp missing");
+            throw new AmqpRejectAndDontRequeueException("unit is not compatible with sensorType");
         }
     }
 }

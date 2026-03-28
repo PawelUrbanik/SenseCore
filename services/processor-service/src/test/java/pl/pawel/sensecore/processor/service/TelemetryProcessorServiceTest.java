@@ -198,7 +198,7 @@ class TelemetryProcessorServiceTest {
     void shouldThrowExceptionWhenUnitIsNotCompatibleWithSensorType() {
         Instant timestamp = Instant.now();
         // TEMPERATURE nie jest zgodny z PERCENT
-        assertThrows(AmqpRejectAndDontRequeueException.class, () -> service.process(
+        AmqpRejectAndDontRequeueException ex = assertThrows(AmqpRejectAndDontRequeueException.class, () -> service.process(
                 new TelemetryEvent(
                         "v1",
                         CORRECT_DEVICE_ID,
@@ -208,6 +208,7 @@ class TelemetryProcessorServiceTest {
                         timestamp
                 )
         ));
+        assertEquals("unit is not compatible with sensorType", ex.getMessage());
         verifyNoInteractions(deviceRepository, telemetryReadingRepository);
     }
 
