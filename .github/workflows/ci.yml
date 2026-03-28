@@ -64,6 +64,18 @@ jobs:
       - name: Build backend artifacts
         run: mvn -B -ntp -DskipTests clean package
 
+      - name: Upload backend build artifacts
+        uses: actions/upload-artifact@v7
+        with:
+          name: backend-build-artifacts
+          path: |
+            services/contracts/target/contracts-*.jar
+            services/persistence/target/persistence-*.jar
+            services/ingestion-service/target/ingestion-service-*.jar
+            services/processor-service/target/processor-service-*.jar
+            services/query-service/target/query-service-*.jar
+          if-no-files-found: error
+
   frontend_test:
     name: Frontend Test (Angular)
     runs-on: ubuntu-latest
@@ -130,25 +142,33 @@ jobs:
           java-version: '17'
           cache: maven
 
-      - name: Install backend modules (no tests)
-        run: >-
-          mvn -B -ntp -DskipTests
-          -pl services/ingestion-service,services/processor-service,services/query-service
-          -am
-          install
+      - name: Download backend build artifacts
+        uses: actions/download-artifact@v5
+        with:
+          name: backend-build-artifacts
+          path: backend-build-artifacts
+
+      - name: Install shared backend dependencies
+        shell: bash
+        run: |
+          VERSION="$(mvn -q -DforceStdout help:evaluate -Dexpression=project.version)"
+          mvn -B -ntp install:install-file \
+            -Dfile="backend-build-artifacts/services/contracts/target/contracts-${VERSION}.jar" \
+            -DpomFile=services/contracts/pom.xml
+          mvn -B -ntp install:install-file \
+            -Dfile="backend-build-artifacts/services/persistence/target/persistence-${VERSION}.jar" \
+            -DpomFile=services/persistence/pom.xml
 
       - name: Run Checkstyle reports (backend modules)
         run: >-
           mvn -B -ntp -DskipTests
           -pl services/ingestion-service,services/processor-service,services/query-service
-          -am
           org.apache.maven.plugins:maven-checkstyle-plugin:3.6.0:checkstyle
 
       - name: Run SpotBugs reports (backend modules)
         run: >-
           mvn -B -ntp -DskipTests
           -pl services/ingestion-service,services/processor-service,services/query-service
-          -am
           com.github.spotbugs:spotbugs-maven-plugin:4.8.6.6:spotbugs
 
       - name: Upload backend analysis reports
@@ -218,12 +238,27 @@ jobs:
           java-version: '17'
           cache: maven
 
+      - name: Download backend build artifacts
+        uses: actions/download-artifact@v5
+        with:
+          name: backend-build-artifacts
+          path: backend-build-artifacts
+
+      - name: Install shared backend dependencies
+        shell: bash
+        run: |
+          VERSION="$(mvn -q -DforceStdout help:evaluate -Dexpression=project.version)"
+          mvn -B -ntp install:install-file \
+            -Dfile="backend-build-artifacts/services/contracts/target/contracts-${VERSION}.jar" \
+            -DpomFile=services/contracts/pom.xml
+          mvn -B -ntp install:install-file \
+            -Dfile="backend-build-artifacts/services/persistence/target/persistence-${VERSION}.jar" \
+            -DpomFile=services/persistence/pom.xml
+
       - name: Run backend integration tests (selected modules)
         run: >-
           mvn -B -ntp
           -pl services/ingestion-service,services/processor-service,services/query-service
-          -am
           -Dsurefire.failIfNoSpecifiedTests=false
           -Dtest='*IntegrationTest,*ApplicationTests'
           test
-
