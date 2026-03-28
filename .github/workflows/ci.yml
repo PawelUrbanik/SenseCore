@@ -152,11 +152,27 @@ jobs:
         shell: bash
         run: |
           VERSION="$(mvn -q -DforceStdout help:evaluate -Dexpression=project.version)"
+          CONTRACTS_JAR="$(find backend-build-artifacts -type f -name "contracts-${VERSION}.jar" | head -n 1)"
+          PERSISTENCE_JAR="$(find backend-build-artifacts -type f -name "persistence-${VERSION}.jar" | head -n 1)"
+
+          if [ -z "$CONTRACTS_JAR" ]; then
+            CONTRACTS_JAR="$(find backend-build-artifacts -type f -name 'contracts-*.jar' | head -n 1)"
+          fi
+          if [ -z "$PERSISTENCE_JAR" ]; then
+            PERSISTENCE_JAR="$(find backend-build-artifacts -type f -name 'persistence-*.jar' | head -n 1)"
+          fi
+
+          if [ -z "$CONTRACTS_JAR" ] || [ -z "$PERSISTENCE_JAR" ]; then
+            echo "Missing required backend dependency artifacts after download"
+            find backend-build-artifacts -maxdepth 6 -type f -name '*.jar' -print
+            exit 1
+          fi
+
           mvn -B -ntp install:install-file \
-            -Dfile="backend-build-artifacts/services/contracts/target/contracts-${VERSION}.jar" \
+            -Dfile="$CONTRACTS_JAR" \
             -DpomFile=services/contracts/pom.xml
           mvn -B -ntp install:install-file \
-            -Dfile="backend-build-artifacts/services/persistence/target/persistence-${VERSION}.jar" \
+            -Dfile="$PERSISTENCE_JAR" \
             -DpomFile=services/persistence/pom.xml
 
       - name: Run Checkstyle reports (backend modules)
@@ -248,11 +264,27 @@ jobs:
         shell: bash
         run: |
           VERSION="$(mvn -q -DforceStdout help:evaluate -Dexpression=project.version)"
+          CONTRACTS_JAR="$(find backend-build-artifacts -type f -name "contracts-${VERSION}.jar" | head -n 1)"
+          PERSISTENCE_JAR="$(find backend-build-artifacts -type f -name "persistence-${VERSION}.jar" | head -n 1)"
+
+          if [ -z "$CONTRACTS_JAR" ]; then
+            CONTRACTS_JAR="$(find backend-build-artifacts -type f -name 'contracts-*.jar' | head -n 1)"
+          fi
+          if [ -z "$PERSISTENCE_JAR" ]; then
+            PERSISTENCE_JAR="$(find backend-build-artifacts -type f -name 'persistence-*.jar' | head -n 1)"
+          fi
+
+          if [ -z "$CONTRACTS_JAR" ] || [ -z "$PERSISTENCE_JAR" ]; then
+            echo "Missing required backend dependency artifacts after download"
+            find backend-build-artifacts -maxdepth 6 -type f -name '*.jar' -print
+            exit 1
+          fi
+
           mvn -B -ntp install:install-file \
-            -Dfile="backend-build-artifacts/services/contracts/target/contracts-${VERSION}.jar" \
+            -Dfile="$CONTRACTS_JAR" \
             -DpomFile=services/contracts/pom.xml
           mvn -B -ntp install:install-file \
-            -Dfile="backend-build-artifacts/services/persistence/target/persistence-${VERSION}.jar" \
+            -Dfile="$PERSISTENCE_JAR" \
             -DpomFile=services/persistence/pom.xml
 
       - name: Run backend integration tests (selected modules)
@@ -262,3 +294,4 @@ jobs:
           -Dsurefire.failIfNoSpecifiedTests=false
           -Dtest='*IntegrationTest,*ApplicationTests'
           test
+
