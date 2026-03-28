@@ -117,13 +117,13 @@ jobs:
 
     steps:
       - name: Download backend unit test reports
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v7
         with:
           name: backend-unit-test-reports
           path: unit-test-reports/backend
 
       - name: Download frontend unit test report
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v7
         with:
           name: frontend-unit-test-report
           path: unit-test-reports/frontend
@@ -356,6 +356,7 @@ jobs:
           -Dsurefire.failIfNoSpecifiedTests=false
           -Dtest='*IntegrationTest,*ApplicationTests'
           test
+
 
 
 
