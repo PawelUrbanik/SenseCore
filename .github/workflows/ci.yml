@@ -52,50 +52,6 @@ jobs:
           path: services/**/target/surefire-reports/*.xml
           if-no-files-found: warn
 
-      - name: Summarize backend unit tests
-        if: always()
-        shell: bash
-        run: |
-          python3 - <<'PY'
-          import glob
-          import os
-          import xml.etree.ElementTree as ET
-
-          files = glob.glob('services/**/target/surefire-reports/*.xml', recursive=True)
-          totals = {'tests': 0, 'failures': 0, 'errors': 0, 'skipped': 0}
-
-          for fp in files:
-              try:
-                  root = ET.parse(fp).getroot()
-              except Exception:
-                  continue
-
-              suites = []
-              if root.tag == 'testsuite':
-                  suites = [root]
-              elif root.tag == 'testsuites':
-                  suites = root.findall('testsuite')
-
-              for s in suites:
-                  totals['tests'] += int(s.attrib.get('tests', 0) or 0)
-                  totals['failures'] += int(s.attrib.get('failures', 0) or 0)
-                  totals['errors'] += int(s.attrib.get('errors', 0) or 0)
-                  totals['skipped'] += int(s.attrib.get('skipped', 0) or 0)
-
-          passed = max(0, totals['tests'] - totals['failures'] - totals['errors'] - totals['skipped'])
-          summary = os.environ.get('GITHUB_STEP_SUMMARY')
-          if summary:
-              with open(summary, 'a', encoding='utf-8') as f:
-                  f.write('### Backend Unit Tests\n\n')
-                  f.write(f'Parsed report files: {len(files)}\n\n')
-                  f.write('| Metric | Value |\n')
-                  f.write('|---|---:|\n')
-                  f.write(f"| Total | {totals['tests']} |\n")
-                  f.write(f"| Passed | {passed} |\n")
-                  f.write(f"| Failed | {totals['failures']} |\n")
-                  f.write(f"| Errors | {totals['errors']} |\n")
-                  f.write(f"| Skipped | {totals['skipped']} |\n")
-          PY
 
   backend_build:
     name: Backend Build (Maven)
@@ -152,45 +108,83 @@ jobs:
           path: frontend/sensecore-web/test-results/frontend-junit.xml
           if-no-files-found: warn
 
-      - name: Summarize frontend unit tests
-        if: always()
+
+  unit_test_summary:
+    name: Unit Test Summary
+    runs-on: ubuntu-latest
+    if: always()
+    needs:
+      - backend_unit_test
+      - frontend_test
+
+    steps:
+      - name: Download backend unit test reports
+        uses: actions/download-artifact@v5
+        with:
+          name: backend-unit-test-reports
+          path: unit-test-reports/backend
+          if-no-files-found: warn
+
+      - name: Download frontend unit test report
+        uses: actions/download-artifact@v5
+        with:
+          name: frontend-unit-test-report
+          path: unit-test-reports/frontend
+          if-no-files-found: warn
+
+      - name: Summarize unit tests (backend + frontend)
         shell: bash
         run: |
           python3 - <<'PY'
+          import glob
           import os
           import xml.etree.ElementTree as ET
 
-          report = 'test-results/frontend-junit.xml'
-          tests = failures = errors = skipped = 0
+          def collect(paths):
+              totals = {'tests': 0, 'failures': 0, 'errors': 0, 'skipped': 0}
+              files = 0
+              for pattern in paths:
+                  for fp in glob.glob(pattern, recursive=True):
+                      files += 1
+                      try:
+                          root = ET.parse(fp).getroot()
+                      except Exception:
+                          continue
 
-          try:
-              root = ET.parse(report).getroot()
-              suites = []
-              if root.tag == 'testsuite':
-                  suites = [root]
-              elif root.tag == 'testsuites':
-                  suites = root.findall('testsuite')
+                      suites = []
+                      if root.tag == 'testsuite':
+                          suites = [root]
+                      elif root.tag == 'testsuites':
+                          suites = root.findall('testsuite')
 
-              for s in suites:
-                  tests += int(s.attrib.get('tests', 0) or 0)
-                  failures += int(s.attrib.get('failures', 0) or 0)
-                  errors += int(s.attrib.get('errors', 0) or 0)
-                  skipped += int(s.attrib.get('skipped', 0) or 0)
-          except Exception:
-              pass
+                      for s in suites:
+                          totals['tests'] += int(s.attrib.get('tests', 0) or 0)
+                          totals['failures'] += int(s.attrib.get('failures', 0) or 0)
+                          totals['errors'] += int(s.attrib.get('errors', 0) or 0)
+                          totals['skipped'] += int(s.attrib.get('skipped', 0) or 0)
+              return files, totals
 
-          passed = max(0, tests - failures - errors - skipped)
+          def write_table(f, title, files, totals):
+              passed = max(0, totals['tests'] - totals['failures'] - totals['errors'] - totals['skipped'])
+              f.write(f"### {title}\\n\\n")
+              f.write(f"Parsed report files: {files}\\n\\n")
+              f.write("| Metric | Value |\\n")
+              f.write("|---|---:|\\n")
+              f.write(f"| Total | {totals['tests']} |\\n")
+              f.write(f"| Passed | {passed} |\\n")
+              f.write(f"| Failed | {totals['failures']} |\\n")
+              f.write(f"| Errors | {totals['errors']} |\\n")
+              f.write(f"| Skipped | {totals['skipped']} |\\n\\n")
+
+          backend_files, backend = collect(['unit-test-reports/backend/**/*.xml'])
+          frontend_files, frontend = collect(['unit-test-reports/frontend/**/*.xml'])
+
           summary = os.environ.get('GITHUB_STEP_SUMMARY')
           if summary:
               with open(summary, 'a', encoding='utf-8') as f:
-                  f.write('### Frontend Unit Tests\\n\\n')
-                  f.write('| Metric | Value |\\n')
-                  f.write('|---|---:|\\n')
-                  f.write(f'| Total | {tests} |\\n')
-                  f.write(f'| Passed | {passed} |\\n')
-                  f.write(f'| Failed | {failures} |\\n')
-                  f.write(f'| Errors | {errors} |\\n')
-                  f.write(f'| Skipped | {skipped} |\\n')
+                  f.write("## Unit Tests\\n\\n")
+                  write_table(f, 'Backend Unit Tests', backend_files, backend)
+                  write_table(f, 'Frontend Unit Tests', frontend_files, frontend)
           PY
 
   frontend_build:
@@ -368,4 +362,6 @@ jobs:
           -Dsurefire.failIfNoSpecifiedTests=false
           -Dtest='*IntegrationTest,*ApplicationTests'
           test
+
+
 
