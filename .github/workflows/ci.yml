@@ -246,6 +246,51 @@ jobs:
           -am
           com.github.spotbugs:spotbugs-maven-plugin:4.8.6.6:spotbugs
 
+
+      - name: Summarize backend code analysis
+        if: always()
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import glob
+          import os
+          import xml.etree.ElementTree as ET
+
+          checkstyle_files = glob.glob('services/**/target/checkstyle-result.xml', recursive=True)
+          spotbugs_files = glob.glob('services/**/target/spotbugsXml.xml', recursive=True)
+
+          checkstyle_issues = 0
+          for fp in checkstyle_files:
+              try:
+                  root = ET.parse(fp).getroot()
+                  checkstyle_issues += len(root.findall('.//error'))
+              except Exception:
+                  pass
+
+          spotbugs_total = 0
+          spotbugs_high = 0
+          for fp in spotbugs_files:
+              try:
+                  root = ET.parse(fp).getroot()
+                  bugs = root.findall('.//BugInstance')
+                  spotbugs_total += len(bugs)
+                  for b in bugs:
+                      priority = b.attrib.get('priority', '')
+                      if priority == '1':
+                          spotbugs_high += 1
+              except Exception:
+                  pass
+
+          summary = os.environ.get('GITHUB_STEP_SUMMARY')
+          if summary:
+              with open(summary, 'a', encoding='utf-8') as f:
+                  f.write('### Backend Code Analysis\n\n')
+                  f.write('| Analyzer | Files | Findings |\n')
+                  f.write('|---|---:|---:|\n')
+                  f.write(f'| Checkstyle | {len(checkstyle_files)} | {checkstyle_issues} |\n')
+                  f.write(f'| SpotBugs (total) | {len(spotbugs_files)} | {spotbugs_total} |\n')
+                  f.write(f'| SpotBugs (high priority) | {len(spotbugs_files)} | {spotbugs_high} |\n')
+          PY
       - name: Upload backend analysis reports
         if: always()
         uses: actions/upload-artifact@v7
