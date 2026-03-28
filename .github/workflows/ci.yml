@@ -12,8 +12,8 @@ permissions:
   contents: read
 
 jobs:
-  backend:
-    name: Backend (Maven)
+  backend_test:
+    name: Backend Test (Maven)
     runs-on: ubuntu-latest
 
     steps:
@@ -27,11 +27,30 @@ jobs:
           java-version: '17'
           cache: maven
 
-      - name: Build and test backend
-        run: mvn -B -ntp clean verify
+      - name: Run backend tests
+        run: mvn -B -ntp test
 
-  frontend:
-    name: Frontend (Angular)
+  backend_build:
+    name: Backend Build (Maven)
+    runs-on: ubuntu-latest
+    needs: backend_test
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Set up Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: maven
+
+      - name: Build backend artifacts
+        run: mvn -B -ntp -DskipTests clean package
+
+  frontend_test:
+    name: Frontend Test (Angular)
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -53,6 +72,28 @@ jobs:
 
       - name: Run unit tests
         run: npm test -- --watch=false
+
+  frontend_build:
+    name: Frontend Build (Angular)
+    runs-on: ubuntu-latest
+    needs: frontend_test
+    defaults:
+      run:
+        working-directory: frontend/sensecore-web
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Set up Node 24
+        uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: frontend/sensecore-web/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
 
       - name: Build frontend
         run: npm run build
