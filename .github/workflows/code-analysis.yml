@@ -1,0 +1,89 @@
+name: Code Analysis
+
+on:
+  workflow_run:
+    workflows:
+      - CI
+    types:
+      - completed
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  backend_analysis:
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+    name: Backend Analysis (Checkstyle + SpotBugs)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Set up Java 17
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: maven
+
+      - name: Run Checkstyle reports
+        run: >-
+          mvn -B -ntp -DskipTests
+          org.apache.maven.plugins:maven-checkstyle-plugin:3.6.0:checkstyle
+
+      - name: Run SpotBugs reports
+        run: >-
+          mvn -B -ntp -DskipTests
+          com.github.spotbugs:spotbugs-maven-plugin:4.8.6.6:spotbugs
+
+      - name: Upload backend analysis reports
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: backend-analysis-reports
+          path: |
+            services/**/target/checkstyle-result.xml
+            services/**/target/spotbugsXml.xml
+          if-no-files-found: warn
+
+  frontend_analysis:
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+    name: Frontend Analysis (TypeCheck + npm audit)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend/sensecore-web
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Set up Node 24
+        uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: frontend/sensecore-web/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Type check
+        run: npx tsc -p tsconfig.app.json --noEmit
+
+      - name: npm audit (high+)
+        run: npm audit --audit-level=high --json > npm-audit.json
+        continue-on-error: true
+
+      - name: Upload frontend analysis reports
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: frontend-analysis-reports
+          path: frontend/sensecore-web/npm-audit.json
+          if-no-files-found: warn
