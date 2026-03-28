@@ -138,8 +138,60 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Run unit tests
-        run: npm test -- --watch=false
+      - name: Run unit tests (JUnit report)
+        shell: bash
+        run: |
+          mkdir -p test-results
+          npm test -- --watch=false --reporters=junit --output-file=test-results/frontend-junit.xml
+
+      - name: Upload frontend unit test report
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: frontend-unit-test-report
+          path: frontend/sensecore-web/test-results/frontend-junit.xml
+          if-no-files-found: warn
+
+      - name: Summarize frontend unit tests
+        if: always()
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import os
+          import xml.etree.ElementTree as ET
+
+          report = 'test-results/frontend-junit.xml'
+          tests = failures = errors = skipped = 0
+
+          try:
+              root = ET.parse(report).getroot()
+              suites = []
+              if root.tag == 'testsuite':
+                  suites = [root]
+              elif root.tag == 'testsuites':
+                  suites = root.findall('testsuite')
+
+              for s in suites:
+                  tests += int(s.attrib.get('tests', 0) or 0)
+                  failures += int(s.attrib.get('failures', 0) or 0)
+                  errors += int(s.attrib.get('errors', 0) or 0)
+                  skipped += int(s.attrib.get('skipped', 0) or 0)
+          except Exception:
+              pass
+
+          passed = max(0, tests - failures - errors - skipped)
+          summary = os.environ.get('GITHUB_STEP_SUMMARY')
+          if summary:
+              with open(summary, 'a', encoding='utf-8') as f:
+                  f.write('### Frontend Unit Tests\\n\\n')
+                  f.write('| Metric | Value |\\n')
+                  f.write('|---|---:|\\n')
+                  f.write(f'| Total | {tests} |\\n')
+                  f.write(f'| Passed | {passed} |\\n')
+                  f.write(f'| Failed | {failures} |\\n')
+                  f.write(f'| Errors | {errors} |\\n')
+                  f.write(f'| Skipped | {skipped} |\\n')
+          PY
 
   frontend_build:
     name: Frontend Build (Angular)
@@ -316,3 +368,4 @@ jobs:
           -Dsurefire.failIfNoSpecifiedTests=false
           -Dtest='*IntegrationTest,*ApplicationTests'
           test
+
