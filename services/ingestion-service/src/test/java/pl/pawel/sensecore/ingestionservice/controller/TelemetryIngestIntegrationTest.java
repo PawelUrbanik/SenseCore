@@ -10,20 +10,22 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.context.annotation.Import;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import pl.pawel.sensecore.contracts.SensorType;
 import pl.pawel.sensecore.contracts.TelemetryEvent;
 import pl.pawel.sensecore.contracts.Unit;
-import pl.pawel.sensecore.ingestionservice.device.DeviceRepository;
+import pl.pawel.sensecore.ingestionservice.device.DeviceDto;
+import pl.pawel.sensecore.ingestionservice.device.DeviceRegistryService;
 import pl.pawel.sensecore.ingestionservice.security.CertUtils;
 import pl.pawel.sensecore.ingestionservice.support.RabbitTestConfig;
 import pl.pawel.sensecore.ingestionservice.support.TestcontainersConfig;
-import pl.pawel.sensecore.persistence.entity.Device;
 
 import java.math.BigDecimal;
 import java.time.Instant;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -42,17 +44,16 @@ class TelemetryIngestIntegrationTest extends TestcontainersConfig {
     private MockMvc mockMvc;
 
     @Autowired
-    private DeviceRepository deviceRepository;
-
-    @Autowired
     private RabbitTemplate rabbitTemplate;
+
+    @MockitoBean
+    private DeviceRegistryService deviceRegistryService;
 
     @Value("${sensecore.rabbit.temperature-routing-key}")
     private String telemetryQueue;
 
     @BeforeEach
     void setUp() {
-        deviceRepository.deleteAll();
         rabbitTemplate.execute(channel -> {
             channel.queuePurge(telemetryQueue);
             return null;
@@ -62,11 +63,8 @@ class TelemetryIngestIntegrationTest extends TestcontainersConfig {
     @Test
     void ingest_accepts_valid_payload_and_publishes_event() throws Exception {
         String fingerprint = CertUtils.sha256FromClientCertHeader(CERT_HEADER);
-        Device device = new Device();
-        device.setDeviceId("dev-1");
-        device.setStatus("ACTIVE");
-        device.setFingerprint(fingerprint);
-        deviceRepository.save(device);
+        when(deviceRegistryService.resolveActiveDeviceByFingerprint(fingerprint))
+                .thenReturn(new DeviceDto("dev-1", "ACTIVE", fingerprint));
 
         String body = """
                 {
@@ -118,11 +116,8 @@ class TelemetryIngestIntegrationTest extends TestcontainersConfig {
     @Test
     void ingest_rejects_temperature_out_of_range() throws Exception {
         String fingerprint = CertUtils.sha256FromClientCertHeader(CERT_HEADER);
-        Device device = new Device();
-        device.setDeviceId("dev-1");
-        device.setStatus("ACTIVE");
-        device.setFingerprint(fingerprint);
-        deviceRepository.save(device);
+        when(deviceRegistryService.resolveActiveDeviceByFingerprint(fingerprint))
+                .thenReturn(new DeviceDto("dev-1", "ACTIVE", fingerprint));
 
         String body = """
                 {

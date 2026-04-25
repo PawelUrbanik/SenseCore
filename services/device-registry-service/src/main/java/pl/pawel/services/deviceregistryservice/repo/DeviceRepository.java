@@ -1,12 +1,12 @@
-package pl.pawel.sensecore.ingestionservice.device;
+package pl.pawel.services.deviceregistryservice.repo;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
-import pl.pawel.sensecore.persistence.entity.Device;
+import pl.pawel.services.deviceregistryservice.model.Device;
 
 import java.util.Optional;
 
-@Repository
 public interface DeviceRepository extends JpaRepository<Device, Long> {
     Optional<Device> findDeviceByFingerprint(String fingerprint);
+
+    Optional<Device> findDeviceByDeviceId(String deviceId);
 }
