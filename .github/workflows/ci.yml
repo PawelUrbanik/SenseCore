@@ -247,50 +247,6 @@ jobs:
           com.github.spotbugs:spotbugs-maven-plugin:4.8.6.6:spotbugs
 
 
-      - name: Summarize backend code analysis
-        if: always()
-        shell: bash
-        run: |
-          python3 - <<'PY'
-          import glob
-          import os
-          import xml.etree.ElementTree as ET
-
-          checkstyle_files = glob.glob('services/**/target/checkstyle-result.xml', recursive=True)
-          spotbugs_files = glob.glob('services/**/target/spotbugsXml.xml', recursive=True)
-
-          checkstyle_issues = 0
-          for fp in checkstyle_files:
-              try:
-                  root = ET.parse(fp).getroot()
-                  checkstyle_issues += len(root.findall('.//error'))
-              except Exception:
-                  pass
-
-          spotbugs_total = 0
-          spotbugs_high = 0
-          for fp in spotbugs_files:
-              try:
-                  root = ET.parse(fp).getroot()
-                  bugs = root.findall('.//BugInstance')
-                  spotbugs_total += len(bugs)
-                  for b in bugs:
-                      priority = b.attrib.get('priority', '')
-                      if priority == '1':
-                          spotbugs_high += 1
-              except Exception:
-                  pass
-
-          summary = os.environ.get('GITHUB_STEP_SUMMARY')
-          if summary:
-              with open(summary, 'a', encoding='utf-8') as f:
-                  f.write('### Backend Code Analysis\n\n')
-                  f.write('| Analyzer | Files | Findings |\n')
-                  f.write('|---|---:|---:|\n')
-                  f.write(f'| Checkstyle | {len(checkstyle_files)} | {checkstyle_issues} |\n')
-                  f.write(f'| SpotBugs (total) | {len(spotbugs_files)} | {spotbugs_total} |\n')
-                  f.write(f'| SpotBugs (high priority) | {len(spotbugs_files)} | {spotbugs_high} |\n')
-          PY
       - name: Upload backend analysis reports
         if: always()
         uses: actions/upload-artifact@v7
@@ -331,42 +287,6 @@ jobs:
         run: |
           npm audit --audit-level=high --json > npm-audit.json || true
 
-      - name: Summarize npm audit
-        if: always()
-        shell: bash
-        run: |
-          node - <<'NODE'
-          const fs = require('fs');
-          const summary = process.env.GITHUB_STEP_SUMMARY;
-
-          let vulnerabilities = { critical: 0, high: 0, moderate: 0, low: 0 };
-          try {
-            const raw = fs.readFileSync('npm-audit.json', 'utf8');
-            const data = JSON.parse(raw);
-            const meta = (data.metadata && data.metadata.vulnerabilities) || {};
-            vulnerabilities = {
-              critical: meta.critical || 0,
-              high: meta.high || 0,
-              moderate: meta.moderate || 0,
-              low: meta.low || 0
-            };
-          } catch (_) {
-            // Keep default zero values when report is missing or invalid.
-          }
-
-          if (summary) {
-            fs.appendFileSync(summary,
-              '### Frontend npm audit\n\n' +
-              '| Level | Count |\n' +
-              '|---|---:|\n' +
-              `| Critical | ${vulnerabilities.critical} |\n` +
-              `| High | ${vulnerabilities.high} |\n` +
-              `| Moderate | ${vulnerabilities.moderate} |\n` +
-              `| Low | ${vulnerabilities.low} |\n`
-            );
-          }
-          NODE
-
       - name: Upload frontend analysis reports
         if: always()
         uses: actions/upload-artifact@v7
@@ -374,13 +294,101 @@ jobs:
           name: frontend-analysis-reports
           path: frontend/sensecore-web/npm-audit.json
 
+  analysis_summary:
+    name: Code Analysis Summary
+    runs-on: ubuntu-latest
+    if: always()
+    needs:
+      - backend_analysis
+      - frontend_analysis
+
+    steps:
+      - name: Download backend analysis reports
+        uses: actions/download-artifact@v7
+        with:
+          name: backend-analysis-reports
+          path: analysis-reports/backend
+
+      - name: Download frontend analysis reports
+        uses: actions/download-artifact@v7
+        with:
+          name: frontend-analysis-reports
+          path: analysis-reports/frontend
+
+      - name: Summarize code analysis
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import glob
+          import json
+          import os
+          import xml.etree.ElementTree as ET
+
+          checkstyle_files = glob.glob('analysis-reports/backend/**/checkstyle-result.xml', recursive=True)
+          spotbugs_files = glob.glob('analysis-reports/backend/**/spotbugsXml.xml', recursive=True)
+
+          checkstyle_issues = 0
+          for fp in checkstyle_files:
+              try:
+                  root = ET.parse(fp).getroot()
+                  checkstyle_issues += len(root.findall('.//error'))
+              except Exception:
+                  pass
+
+          spotbugs_total = 0
+          spotbugs_high = 0
+          for fp in spotbugs_files:
+              try:
+                  root = ET.parse(fp).getroot()
+                  bugs = root.findall('.//BugInstance')
+                  spotbugs_total += len(bugs)
+                  for bug in bugs:
+                      if bug.attrib.get('priority', '') == '1':
+                          spotbugs_high += 1
+              except Exception:
+                  pass
+
+          vulnerabilities = {'critical': 0, 'high': 0, 'moderate': 0, 'low': 0}
+          npm_files = glob.glob('analysis-reports/frontend/**/*.json', recursive=True)
+          if npm_files:
+              try:
+                  with open(npm_files[0], encoding='utf-8') as f:
+                      data = json.load(f)
+                  meta = ((data or {}).get('metadata') or {}).get('vulnerabilities') or {}
+                  vulnerabilities = {
+                      'critical': int(meta.get('critical', 0) or 0),
+                      'high': int(meta.get('high', 0) or 0),
+                      'moderate': int(meta.get('moderate', 0) or 0),
+                      'low': int(meta.get('low', 0) or 0),
+                  }
+              except Exception:
+                  pass
+
+          summary = os.environ.get('GITHUB_STEP_SUMMARY')
+          if summary:
+              with open(summary, 'a', encoding='utf-8') as f:
+                  f.write('## Code Analysis\n\n')
+                  f.write('### Backend Analysis\n\n')
+                  f.write('| Analyzer | Files | Findings |\n')
+                  f.write('|---|---:|---:|\n')
+                  f.write(f'| Checkstyle | {len(checkstyle_files)} | {checkstyle_issues} |\n')
+                  f.write(f'| SpotBugs (total) | {len(spotbugs_files)} | {spotbugs_total} |\n')
+                  f.write(f'| SpotBugs (high priority) | {len(spotbugs_files)} | {spotbugs_high} |\n\n')
+                  f.write('### Frontend npm audit\n\n')
+                  f.write('| Level | Count |\n')
+                  f.write('|---|---:|\n')
+                  f.write(f"| Critical | {vulnerabilities['critical']} |\n")
+                  f.write(f"| High | {vulnerabilities['high']} |\n")
+                  f.write(f"| Moderate | {vulnerabilities['moderate']} |\n")
+                  f.write(f"| Low | {vulnerabilities['low']} |\n")
+          PY
+
   backend_integration_test:
     if: ${{ github.event_name == 'workflow_dispatch' && inputs.run_backend_integration }}
     name: Backend Integration Test (Maven)
     runs-on: ubuntu-latest
     needs:
-      - backend_analysis
-      - frontend_analysis
+      - analysis_summary
 
     steps:
       - name: Checkout
@@ -401,8 +409,3 @@ jobs:
           -Dsurefire.failIfNoSpecifiedTests=false
           -Dtest='*IntegrationTest,*ApplicationTests'
           test
-
-
-
-
-
