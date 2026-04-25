@@ -1,31 +1,12 @@
-﻿.page {
-  display: grid;
-  gap: 16px;
-}
-
-.page-header {
-  display: flex;
-  gap: 24px;
-  justify-content: space-between;
-  align-items: flex-end;
-  flex-wrap: wrap;
-}
-
-.actions {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  align-items: flex-end;
+.meta {
+  color: var(--sc-text-tertiary);
+  font-size: 0.88rem;
 }
 
 .loading {
   display: flex;
   gap: 12px;
   align-items: center;
-}
-
-.error {
-  border-left: 4px solid var(--mat-sys-error);
 }
 
 .filters {
@@ -37,42 +18,37 @@
 
 .table .device-row {
   cursor: pointer;
-  transition: background-color 120ms ease-in-out;
 }
 
 .table .device-row:hover .mat-mdc-cell,
 .table .device-row:hover .mat-cell,
 .table .device-row:hover .mdc-data-table__cell {
-  background-color: rgba(25, 118, 210, 0.12) !important;
+  background-color: #f0eee6 !important;
 }
 
 .table .device-row:focus-visible .mat-mdc-cell,
 .table .device-row:focus-visible .mat-cell,
 .table .device-row:focus-visible .mdc-data-table__cell {
-  background-color: rgba(25, 118, 210, 0.16) !important;
+  background-color: #e8e6dc !important;
 }
 
 .table .device-row:focus-visible {
-  outline: 2px solid var(--mat-sys-primary);
+  outline: 2px solid var(--sc-focus);
   outline-offset: -2px;
 }
 
 :host ::ng-deep .table .device-row:hover > .mdc-data-table__cell,
 :host ::ng-deep .table .device-row:hover > .mat-mdc-cell {
-  background-color: rgba(25, 118, 210, 0.12) !important;
+  background-color: #f0eee6 !important;
 }
 
 :host ::ng-deep .table .device-row:focus-visible > .mdc-data-table__cell,
 :host ::ng-deep .table .device-row:focus-visible > .mat-mdc-cell {
-  background-color: rgba(25, 118, 210, 0.16) !important;
+  background-color: #e8e6dc !important;
 }
 
 @media (max-width: 720px) {
   .filters {
     grid-template-columns: 1fr;
-  }
-
-  .actions {
-    align-items: flex-start;
   }
 }

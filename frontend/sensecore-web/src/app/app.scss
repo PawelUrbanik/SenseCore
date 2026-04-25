@@ -1,20 +1,26 @@
-﻿:host {
+:host {
   display: block;
 }
 
 .app {
   min-height: 100vh;
-  background: var(--mat-sys-surface);
+  background: var(--sc-bg-parchment);
 }
 
 .app-toolbar {
   position: sticky;
   top: 0;
-  z-index: 2;
+  z-index: 20;
+  background: var(--sc-bg-ivory);
+  border-bottom: 1px solid var(--sc-border-cream);
+  color: var(--sc-text-primary);
+  box-shadow: 0 0 0 1px var(--sc-border-cream);
 }
 
 .brand {
-  font-weight: 600;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 1.3rem;
+  font-weight: 500;
   letter-spacing: 0.2px;
 }
 
@@ -23,13 +29,15 @@
 }
 
 .app-main {
-  max-width: 1100px;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 24px 20px 64px;
+  padding: 30px 20px 80px;
 }
 
 .active {
-  font-weight: 600;
+  font-weight: 500;
+  text-decoration: underline;
+  text-underline-offset: 4px;
 }
 
 .skip-link {
@@ -46,9 +54,16 @@
   top: 16px;
   width: auto;
   height: auto;
-  background: var(--mat-sys-surface-container);
-  color: var(--mat-sys-on-surface);
+  background: var(--sc-bg-white);
+  color: var(--sc-text-primary);
   padding: 8px 12px;
-  border-radius: 8px;
-  z-index: 10;
+  border-radius: var(--sc-radius-m);
+  border: 1px solid var(--sc-border-warm);
+  z-index: 30;
+}
+
+@media (max-width: 767px) {
+  .app-main {
+    padding: 24px 16px 48px;
+  }
 }

@@ -26,6 +26,7 @@ Infra:
 - TypeScript/Angular: 2-space indentation, file pattern `*.page.ts|html|scss`, classes in `PascalCase`, members in `camelCase`.
 - Keep API and DTO names explicit (`TelemetryReadingDto`, `QueryApiService`).
 - Frontend formatting follows Prettier settings in `frontend/sensecore-web/package.json` (`printWidth: 100`, single quotes).
+- For frontend UI work, follow the styling rules and visual conventions defined in `DESIGN.md`.
 
 ## Testing Guidelines
 - Backend uses JUnit 5 with Spring Boot Test; integration tests use Testcontainers (PostgreSQL, RabbitMQ).

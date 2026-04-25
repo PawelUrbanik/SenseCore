@@ -1,6 +1,16 @@
-﻿.page {
+.page {
   min-height: 60vh;
   display: grid;
   align-content: center;
   justify-items: start;
+}
+
+.page mat-card {
+  max-width: 540px;
+}
+
+.page mat-card-content {
+  display: grid;
+  gap: 16px;
+  align-items: start;
 }

@@ -1,8 +1,3 @@
-﻿.page {
-  display: grid;
-  gap: 16px;
-}
-
 .sensor-form {
   display: grid;
   gap: 12px;
@@ -19,15 +14,12 @@
 .detail-grid dt {
   font-size: 12px;
   text-transform: uppercase;
-  letter-spacing: 1px;
-  color: var(--mat-sys-on-surface-variant);
+  letter-spacing: 0.12px;
+  color: var(--sc-text-tertiary);
 }
 
 .detail-grid dd {
   margin: 4px 0 0;
-  font-weight: 600;
-}
-
-.error {
-  border-left: 4px solid var(--mat-sys-error);
+  font-weight: 500;
+  color: var(--sc-text-primary);
 }
