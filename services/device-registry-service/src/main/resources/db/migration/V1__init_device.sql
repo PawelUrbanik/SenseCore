@@ -3,6 +3,7 @@ create table if not exists device
     id bigserial primary key,
     device_id varchar(100) not null unique,
     status varchar(30) not null default 'ACTIVE',
+    fingerprint varchar(128) unique,
     created_at timestamptz not null default now()
 );
 

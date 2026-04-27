@@ -8,3 +8,9 @@ spring:
   jpa:
     hibernate:
       ddl-auto: none
+  flyway:
+    enabled: false
+
+sensecore:
+  device-registry:
+    url: http://localhost:8084

@@ -5,8 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pl.pawel.sensecore.query.model.DeviceDto;
-import pl.pawel.sensecore.query.model.DeviceMapper;
-import pl.pawel.sensecore.query.repository.DeviceRepository;
+import pl.pawel.sensecore.query.service.DeviceService;
 
 import java.util.List;
 
@@ -15,21 +14,22 @@ import java.util.List;
 @RequestMapping("/devices")
 public class DeviceController {
 
-    private final DeviceRepository deviceRepository;
-    private final DeviceMapper mapper;
+    private final DeviceService deviceService;
 
-    public DeviceController(DeviceRepository deviceRepository, DeviceMapper mapper) {
-        this.deviceRepository = deviceRepository;
-        this.mapper = mapper;
+    public DeviceController(DeviceService deviceService) {
+        this.deviceService = deviceService;
     }
 
 
     @GetMapping
-    public List<DeviceDto> devices(){
+    public List<DeviceDto> devices() {
         log.debug("Fetching all devices");
-        return deviceRepository.findAllByOrderByDeviceIdAsc()
-                .stream()
-                .map(mapper::toDto)
-                .toList();
+        List<DeviceDto> devices = deviceService.getAllDevices();
+        devices.forEach(device ->
+                log.debug("Found device: id={}, status={}, createdAt={}",
+                        device.deviceId(),
+                        device.status(),
+                        device.createdAt()));
+        return devices;
     }
 }

@@ -20,7 +20,10 @@ spring:
 server:
   port: ${SERVER_PORT:8081}
 
+
 sensecore:
+  device-registry:
+    url: ${SENSECORE_DEVICE_REGISTRY_URL:http://localhost:8084}
   rabbit:
     telemetryExchange: ${SENSECORE_TELEMETRY_EXCHANGE:sensecore.telemetry}
     temperatureRoutingKey: ${SENSECORE_TEMPERATURE_ROUTING_KEY:temperature}

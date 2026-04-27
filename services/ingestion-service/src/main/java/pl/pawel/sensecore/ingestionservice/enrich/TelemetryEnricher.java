@@ -6,7 +6,7 @@ import pl.pawel.sensecore.contracts.SensorType;
 import pl.pawel.sensecore.contracts.TelemetryEvent;
 import pl.pawel.sensecore.contracts.Unit;
 import pl.pawel.sensecore.ingestionservice.api.dto.TelemetryIngestRequest;
-import pl.pawel.sensecore.persistence.entity.Device;
+import pl.pawel.sensecore.ingestionservice.device.DeviceDto;
 
 import java.time.Instant;
 
@@ -16,7 +16,7 @@ public class TelemetryEnricher {
     private static final String SCHEMA_VERSION = "v1";
 
 
-    public TelemetryEvent toTelemetryEvent(Device device, TelemetryIngestRequest request) {
+    public TelemetryEvent toTelemetryEvent(DeviceDto device, TelemetryIngestRequest request) {
         log.debug("Fulfilling timestamp if empty in request");
         Instant ts = (request.timestamp() != null) ? request.timestamp() : Instant.now();
         log.debug("Parsing unit={}", request.unit());
@@ -25,7 +25,7 @@ public class TelemetryEnricher {
         log.debug("Resolving sensor type for unit={}", unit);
         SensorType sensorType = getSensorType(unit);
 
-        return new TelemetryEvent(SCHEMA_VERSION,  device.getDeviceId(), sensorType, request.value(), unit, ts);
+        return new TelemetryEvent(SCHEMA_VERSION, device.deviceId(), sensorType, request.value(), unit, ts);
     }
 
     private Unit parseUnit(String unit) {
@@ -38,7 +38,7 @@ public class TelemetryEnricher {
         };
     }
 
-    private SensorType getSensorType(Unit unit){
+    private SensorType getSensorType(Unit unit) {
         return switch (unit) {
             case CELSIUS -> SensorType.TEMPERATURE;
             case PERCENT -> SensorType.HUMIDITY;

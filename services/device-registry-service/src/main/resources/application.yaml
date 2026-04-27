@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: device-registry-service
+  flyway:
+    enabled: true
+
+server:
+  port: 8084

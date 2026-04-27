@@ -5,12 +5,12 @@ import org.slf4j.MDC;
 import org.springframework.stereotype.Service;
 import pl.pawel.sensecore.contracts.TelemetryEvent;
 import pl.pawel.sensecore.ingestionservice.api.dto.TelemetryIngestRequest;
+import pl.pawel.sensecore.ingestionservice.device.DeviceDto;
 import pl.pawel.sensecore.ingestionservice.device.DeviceRegistryService;
 import pl.pawel.sensecore.ingestionservice.enrich.TelemetryEnricher;
 import pl.pawel.sensecore.ingestionservice.messaging.TelemetryPublisher;
 import pl.pawel.sensecore.ingestionservice.security.ClientIdentity;
 import pl.pawel.sensecore.ingestionservice.validation.PayloadValidator;
-import pl.pawel.sensecore.persistence.entity.Device;
 
 @Slf4j
 @Service
@@ -32,11 +32,11 @@ public class IngestionService {
 
     public void ingest(ClientIdentity identity, TelemetryIngestRequest request) {
         log.debug("Resolving active device by fingerprint prefix={}", maskFingerprint(identity.fingerprint()));
-        Device device = deviceRegistryServices.resolveActiveDeviceByFingerprint(identity.fingerprint());
+        DeviceDto device = deviceRegistryServices.resolveActiveDeviceByFingerprint(identity.fingerprint());
         String previousDeviceId = MDC.get(MDC_DEVICE_ID);
-        MDC.put(MDC_DEVICE_ID, device.getDeviceId());
+        MDC.put(MDC_DEVICE_ID, device.deviceId());
         try {
-            log.debug("Resolved active deviceId={}", device.getDeviceId());
+            log.debug("Resolved active deviceId={}", device.deviceId());
 
             payloadValidator.validateTemperature(request);
 

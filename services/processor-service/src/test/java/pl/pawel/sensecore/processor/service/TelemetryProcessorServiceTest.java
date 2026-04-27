@@ -6,11 +6,13 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.amqp.AmqpRejectAndDontRequeueException;
 import pl.pawel.sensecore.contracts.SensorType;
 import pl.pawel.sensecore.contracts.TelemetryEvent;
 import pl.pawel.sensecore.contracts.Unit;
-import pl.pawel.sensecore.persistence.entity.Device;
-import pl.pawel.sensecore.persistence.entity.TelemetryReading;
+import pl.pawel.sensecore.processor.model.DeviceDto;
+import pl.pawel.sensecore.processor.model.TelemetryReading;
+import pl.pawel.sensecore.processor.repository.TelemetryReadingRepository;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -18,16 +20,13 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
-import org.springframework.amqp.AmqpRejectAndDontRequeueException;
-import pl.pawel.sensecore.processor.repository.DeviceRepository;
-import pl.pawel.sensecore.processor.repository.TelemetryReadingRepository;
 
 @ExtendWith(MockitoExtension.class)
 class TelemetryProcessorServiceTest {
     private static final String CORRECT_DEVICE_ID = "arduino-esp-01";
 
     @Mock
-    DeviceRepository deviceRepository;
+    DeviceService deviceService;
 
     @Mock
     TelemetryReadingRepository telemetryReadingRepository;
@@ -37,10 +36,10 @@ class TelemetryProcessorServiceTest {
 
 
     @Test
-    void shouldProcessCorrectMessage(){
+    void shouldProcessCorrectMessage() {
         Instant timestamp = Instant.now();
-        Device device = new Device();
-        when(deviceRepository.findByDeviceId(CORRECT_DEVICE_ID)).thenReturn(
+        DeviceDto device = new DeviceDto("DEVICE_ID");
+        when(deviceService.findByDeviceId(CORRECT_DEVICE_ID)).thenReturn(
                 Optional.of(device)
         );
         ArgumentCaptor<TelemetryReading> captor = ArgumentCaptor.forClass(TelemetryReading.class);
@@ -64,7 +63,7 @@ class TelemetryProcessorServiceTest {
     @Test
     void shouldThrowExceptionWhenEventIsNull() {
         assertThrows(AmqpRejectAndDontRequeueException.class, () -> service.process(null));
-        verifyNoInteractions(deviceRepository, telemetryReadingRepository);
+        verifyNoInteractions(deviceService, telemetryReadingRepository);
     }
 
     @Test
@@ -80,7 +79,7 @@ class TelemetryProcessorServiceTest {
         );
 
         assertThrows(AmqpRejectAndDontRequeueException.class, () -> service.process(event));
-        verifyNoInteractions(deviceRepository, telemetryReadingRepository);
+        verifyNoInteractions(deviceService, telemetryReadingRepository);
     }
 
     @Test
@@ -96,7 +95,7 @@ class TelemetryProcessorServiceTest {
         );
 
         assertThrows(AmqpRejectAndDontRequeueException.class, () -> service.process(event));
-        verifyNoInteractions(deviceRepository, telemetryReadingRepository);
+        verifyNoInteractions(deviceService, telemetryReadingRepository);
     }
 
     @Test
@@ -112,7 +111,7 @@ class TelemetryProcessorServiceTest {
         );
 
         assertThrows(AmqpRejectAndDontRequeueException.class, () -> service.process(event));
-        verifyNoInteractions(deviceRepository, telemetryReadingRepository);
+        verifyNoInteractions(deviceService, telemetryReadingRepository);
     }
 
     @Test
@@ -128,7 +127,7 @@ class TelemetryProcessorServiceTest {
         );
 
         assertThrows(AmqpRejectAndDontRequeueException.class, () -> service.process(event));
-        verifyNoInteractions(deviceRepository, telemetryReadingRepository);
+        verifyNoInteractions(deviceService, telemetryReadingRepository);
     }
 
     @Test
@@ -144,7 +143,7 @@ class TelemetryProcessorServiceTest {
         );
 
         assertThrows(AmqpRejectAndDontRequeueException.class, () -> service.process(event));
-        verifyNoInteractions(deviceRepository, telemetryReadingRepository);
+        verifyNoInteractions(deviceService, telemetryReadingRepository);
     }
 
     @Test
@@ -160,7 +159,7 @@ class TelemetryProcessorServiceTest {
         );
 
         assertThrows(AmqpRejectAndDontRequeueException.class, () -> service.process(event));
-        verifyNoInteractions(deviceRepository, telemetryReadingRepository);
+        verifyNoInteractions(deviceService, telemetryReadingRepository);
     }
 
     @Test
@@ -176,7 +175,7 @@ class TelemetryProcessorServiceTest {
         );
 
         assertThrows(AmqpRejectAndDontRequeueException.class, () -> service.process(event));
-        verifyNoInteractions(deviceRepository, telemetryReadingRepository);
+        verifyNoInteractions(deviceService, telemetryReadingRepository);
     }
 
     @Test
@@ -191,7 +190,7 @@ class TelemetryProcessorServiceTest {
                         null
                 )
         ));
-        verifyNoInteractions(deviceRepository, telemetryReadingRepository);
+        verifyNoInteractions(deviceService, telemetryReadingRepository);
     }
 
     @Test
@@ -209,13 +208,13 @@ class TelemetryProcessorServiceTest {
                 )
         ));
         assertEquals("unit is not compatible with sensorType", ex.getMessage());
-        verifyNoInteractions(deviceRepository, telemetryReadingRepository);
+        verifyNoInteractions(deviceService, telemetryReadingRepository);
     }
 
     @Test
     void shouldThrowExceptionWhenDeviceIdNotFoundInRepository() {
         Instant timestamp = Instant.now();
-        when(deviceRepository.findByDeviceId("unknown-device")).thenReturn(Optional.empty());
+        when(deviceService.findByDeviceId("unknown-device")).thenReturn(Optional.empty());
 
         assertThrows(AmqpRejectAndDontRequeueException.class, () -> service.process(
                 new TelemetryEvent(
@@ -228,7 +227,7 @@ class TelemetryProcessorServiceTest {
                 )
         ));
 
-        verify(deviceRepository).findByDeviceId("unknown-device");
+        verify(deviceService).findByDeviceId("unknown-device");
         verifyNoInteractions(telemetryReadingRepository);
     }
 

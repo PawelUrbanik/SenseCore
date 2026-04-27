@@ -1,30 +1,23 @@
 package pl.pawel.sensecore.ingestionservice.device;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import pl.pawel.sensecore.persistence.entity.Device;
+import org.springframework.web.client.RestClient;
 
 @Service
 public class DeviceRegistryService {
 
+    private final RestClient deviceRegistryRestClient;
 
-    private final DeviceRepository deviceRepository;
-
-    public DeviceRegistryService(DeviceRepository deviceRepository) {
-        this.deviceRepository = deviceRepository;
+    public DeviceRegistryService(@Qualifier("deviceRegistryRestClient") RestClient deviceRegistryRestClient) {
+        this.deviceRegistryRestClient = deviceRegistryRestClient;
     }
 
-    public Device resolveActiveDeviceByFingerprint(String fingerprint) {
-        Device device = deviceRepository
-                .findDeviceByFingerprint(fingerprint)
-                .orElseThrow(() -> new IllegalArgumentException("Unknown device certificate fingerprint"));
-
-
-        String status = device.getStatus() == null ? "" : device.getStatus().trim().toUpperCase();
-
-        if (!"ACTIVE".equals(status)) {
-            throw new IllegalArgumentException("Device is not active: status=" + status);
-        }
-
-        return device;
+    public DeviceDto resolveActiveDeviceByFingerprint(String fingerprint) {
+        return deviceRegistryRestClient.get()
+                .uri("/internal/devices/by-fingerprint/{fingerprint}", fingerprint)
+                .retrieve()
+                .body(DeviceDto.class);
     }
+
 }

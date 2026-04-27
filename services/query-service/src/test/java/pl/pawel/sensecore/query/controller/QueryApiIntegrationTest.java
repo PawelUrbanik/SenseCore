@@ -4,19 +4,22 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-import pl.pawel.sensecore.persistence.entity.Device;
 import pl.pawel.sensecore.persistence.entity.TelemetryReading;
-import pl.pawel.sensecore.query.repository.DeviceRepository;
+import pl.pawel.sensecore.query.model.DeviceDto;
 import pl.pawel.sensecore.query.repository.TelemetryReadingRepository;
+import pl.pawel.sensecore.query.service.DeviceService;
 import pl.pawel.sensecore.query.support.TestcontainersConfig;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -30,28 +33,22 @@ class QueryApiIntegrationTest extends TestcontainersConfig {
     private MockMvc mockMvc;
 
     @Autowired
-    private DeviceRepository deviceRepository;
-
-    @Autowired
     private TelemetryReadingRepository telemetryReadingRepository;
+
+    @MockBean
+    private DeviceService deviceService;
 
     @BeforeEach
     void setUp() {
         telemetryReadingRepository.deleteAll();
-        deviceRepository.deleteAll();
     }
 
     @Test
     void devices_returns_sorted_by_device_id() throws Exception {
-        Device deviceB = new Device();
-        deviceB.setDeviceId("b-device");
-        deviceB.setStatus("ACTIVE");
-        deviceRepository.save(deviceB);
-
-        Device deviceA = new Device();
-        deviceA.setDeviceId("a-device");
-        deviceA.setStatus("ACTIVE");
-        deviceRepository.save(deviceA);
+        when(deviceService.getAllDevices()).thenReturn(List.of(
+                new DeviceDto("a-device", "ACTIVE", "2026-02-19T10:00:00Z"),
+                new DeviceDto("b-device", "ACTIVE", "2026-02-19T11:00:00Z")
+        ));
 
         mockMvc.perform(get("/devices"))
                 .andExpect(status().isOk())
