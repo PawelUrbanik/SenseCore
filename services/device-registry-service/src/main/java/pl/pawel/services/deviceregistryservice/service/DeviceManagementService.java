@@ -3,6 +3,7 @@ package pl.pawel.services.deviceregistryservice.service;
 import org.springframework.stereotype.Service;
 import pl.pawel.services.deviceregistryservice.model.DeviceDto;
 import pl.pawel.services.deviceregistryservice.model.DeviceExtDto;
+import pl.pawel.services.deviceregistryservice.model.DeviceListItemDto;
 import pl.pawel.services.deviceregistryservice.repo.DeviceRepository;
 
 import java.util.List;
@@ -42,11 +43,14 @@ public class DeviceManagementService {
                 .orElseThrow(() -> new IllegalArgumentException("Unknown device id"));
     }
 
-    public List<DeviceExtDto> getAllDevices() {
+    public List<DeviceListItemDto> getAllDevices() {
         return deviceRepository
-                .findAll()
+                .findAllByOrderByDeviceIdAsc()
                 .stream()
-                .map(device -> new DeviceExtDto(device.getDeviceId(), device.getStatus()))
+                .map(device -> new DeviceListItemDto(
+                        device.getDeviceId(),
+                        device.getStatus(),
+                        device.getCreatedAt()))
                 .toList();
     }
 }

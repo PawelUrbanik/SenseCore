@@ -133,6 +133,7 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/sensecore
       SPRING_DATASOURCE_USERNAME: sensecore
       SPRING_DATASOURCE_PASSWORD: sensecore
+      SENSECORE_DEVICE_REGISTRY_URL: http://device-registry-service:8084
     ports:
       - "8083:8083"
     depends_on:
