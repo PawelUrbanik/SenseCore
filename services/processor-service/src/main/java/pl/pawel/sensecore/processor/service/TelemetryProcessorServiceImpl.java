@@ -5,8 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.AmqpRejectAndDontRequeueException;
 import org.springframework.stereotype.Service;
 import pl.pawel.sensecore.contracts.TelemetryEvent;
-import pl.pawel.sensecore.persistence.entity.TelemetryReading;
-import pl.pawel.sensecore.processor.repository.DeviceRepository;
+import pl.pawel.sensecore.processor.model.TelemetryReading;
 import pl.pawel.sensecore.processor.repository.TelemetryReadingRepository;
 
 import java.time.Instant;
@@ -17,11 +16,11 @@ import static org.apache.logging.log4j.util.Strings.isBlank;
 @Slf4j
 public class TelemetryProcessorServiceImpl implements TelemetryProcessorService {
 
-    private final DeviceRepository deviceRepository;
+    private final DeviceService deviceService;
     private final TelemetryReadingRepository telemetryReadingRepository;
 
-    public TelemetryProcessorServiceImpl(DeviceRepository deviceRepository, TelemetryReadingRepository telemetryReadingRepository) {
-        this.deviceRepository = deviceRepository;
+    public TelemetryProcessorServiceImpl(DeviceService deviceService, TelemetryReadingRepository telemetryReadingRepository) {
+        this.deviceService = deviceService;
         this.telemetryReadingRepository = telemetryReadingRepository;
     }
 
@@ -31,7 +30,7 @@ public class TelemetryProcessorServiceImpl implements TelemetryProcessorService 
         validate(event);
 
         log.debug("Looking for device with id={}", event.deviceId());
-        deviceRepository.findByDeviceId(event.deviceId()).orElseThrow(
+        deviceService.findByDeviceId(event.deviceId()).orElseThrow(
                 () -> new AmqpRejectAndDontRequeueException("Invalid device id")
         );
         log.debug("Device found");
